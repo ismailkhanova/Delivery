@@ -44,6 +44,7 @@ class Customer(models.Model):
 
 class Store(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
+    desc = models.CharField(max_length=255, verbose_name="Описание")
     avatar = models.ImageField(upload_to="store_avatars/", verbose_name="Аватар", null=True,
                                blank=True)  # нужно переделать потом null на False,
     # добавить картинку по умолчанию
@@ -76,6 +77,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория")
     store = models.ForeignKey(Store, on_delete=models.CASCADE, verbose_name="Магазин")
     price = models.DecimalField(decimal_places=2, max_digits=19, verbose_name="Цена")
+    desc = models.CharField(max_length=255, verbose_name="Описание")
     available = models.BooleanField(default=True, verbose_name="Доступен",)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -141,6 +143,6 @@ str = Store.objects.all()[0]
 print(str.mini_avatar.url)
 print(str.mini_avatar.width)
 
-# picture = Product.objects.all()[0]
-# print(picture.mini_picture.url)
-# print(picture.mini_picture.width)
+picture = Product.objects.all()[0]
+print(picture.mini_picture.url)
+print(picture.mini_picture.width)

@@ -7,7 +7,10 @@
   <img class="card-img-top" src="{{ str.mini_avatar.url }}" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">{{ str.name }}</h5>
-    <a href="#" class="btn btn-primary">Посмотреть каталог</a>
+      <p class="card-text">{{ str.desc }}</p>
+
+    <a href="{% url 'store_products' pk=str.pk %}" class="btn btn-primary">Посмотреть каталог</a>
+
   </div>
 </div>
 

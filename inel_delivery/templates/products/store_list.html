@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+{% for str in store %}
+  <div class="col-sm-4">
+  <div class="card" style="width: 18rem;">
+  <img class="card-img-top" src="{{ str.mini_avatar.url }}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{ str.name }}</h5>
+      <p class="card-text">{{ str.desc }}</p>
+
+    <a href="{% url 'store_products' pk=str.pk %}" class="btn btn-primary">Посмотреть каталог</a>
+
+  </div>
+</div>
+
+  </div>
+{% endfor %}
+</div>
+
+
+
+{% endblock %}

@@ -72,11 +72,13 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "imagekit",
+
 ]
 
 LOCAL_APPS = [
     "inel_delivery.users.apps.UsersConfig",
-    "products",
+    # Your stuff: custom apps go here
+    "products"
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

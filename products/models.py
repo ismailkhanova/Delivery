@@ -139,10 +139,10 @@ class Order(models.Model):
 # print(picture.mini_avatar.url)
 # print(picture.mini_avatar.width)
 
-str = Store.objects.all()[0]
-print(str.mini_avatar.url)
-print(str.mini_avatar.width)
-
-picture = Product.objects.all()[0]
-print(picture.mini_picture.url)
-print(picture.mini_picture.width)
+# str = Store.objects.all()[0]
+# print(str.mini_avatar.url)
+# print(str.mini_avatar.width)
+#
+# picture = Product.objects.all()[0]
+# print(picture.mini_picture.url)
+# print(picture.mini_picture.width)

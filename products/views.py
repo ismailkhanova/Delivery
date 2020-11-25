@@ -38,3 +38,8 @@ class ProductCategory(ListView):
         context = super().get_context_data(**kwargs)
         context["cat_bar"] = Category.objects.all()
         return context
+
+
+class ProductDetail(DetailView):
+    model = Product
+    context_object_name = "picture"

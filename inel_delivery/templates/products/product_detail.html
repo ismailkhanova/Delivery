@@ -9,7 +9,7 @@
     {% endfor %}
   </li>
 </ul>
-{% for picture in products %}
+
   <div class="col-sm-4">
   <div class="card" style="width: 18rem;">
   <img class="card-img-top" src="{{ picture.mini_picture.url }}" alt="Card image cap">
@@ -17,14 +17,10 @@
     <h5 class="card-title">{{ picture.name }}</h5>
      <p class="card-text">{{ picture.desc }}</p>
     <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Цена: {{ picture.price }} сом</p>
-    <a href="{% url 'product_detail' picture.pk %}" class="btn btn-primary">Посмотреть товар</a>
+    <a href="#" class="btn btn-primary">Заказать</a>
   </div>
 </div>
 
   </div>
-{% endfor %}
 </div>
-
-
-
 {% endblock %}

@@ -44,6 +44,7 @@ class Customer(models.Model):
 
 class Store(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
+    slug = models.SlugField(max_length=200, db_index=True)
     desc = models.CharField(max_length=255, verbose_name="Описание")
     avatar = models.ImageField(upload_to="store_avatars/", verbose_name="Аватар", null=False,
                                blank=True, default="store_avatars/no-image.jpg")

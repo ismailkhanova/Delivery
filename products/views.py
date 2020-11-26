@@ -15,7 +15,7 @@ class StoreProduct(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        self.store = get_object_or_404(Store, pk=self.kwargs['pk'])
+        self.store = get_object_or_404(Store, slug=self.kwargs['slug'])
         return Product.objects.filter(store=self.store)
 
     def get_context_data(self, **kwargs):
@@ -31,8 +31,8 @@ class ProductCategory(ListView):
     context_object_name = 'pro_list'
 
     def get_queryset(self):
-        category = get_object_or_404(Category, pk=self.kwargs['pk'])
-        return Product.objects.filter(category=category)
+        self.category = get_object_or_404(Category, slug=self.kwargs['slug'])
+        return Product.objects.filter(category=self.category)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

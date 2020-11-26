@@ -3,12 +3,16 @@ from django.contrib import admin
 from products.models import Deliveryman, Customer, Store, Category, Product, Order, OrderProduct
 
 
-
 admin.site.register(Deliveryman)
 
 admin.site.register(Customer)
 
-admin.site.register(Store)
+
+class StoreAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+
+
+admin.site.register(Store, StoreAdmin)
 
 
 class CategoryAdmin(admin.ModelAdmin):

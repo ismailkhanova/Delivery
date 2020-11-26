@@ -1,26 +1,22 @@
 {% extends "base.html" %}
+
 {% block content %}
+
 <div class="row">
 
-<ul class="nav flex-column">
-  <li class="nav-item">
-    {% for category in cat_bar %}
-    <a class="nav-link" href="{% url 'product_category' slug=category.slug %}">{{ category.name }}</a>
-    {% endfor %}
-  </li>
-</ul>
 
   <div class="col-sm-4">
-  <div class="card" style="width: 18rem;">
-  <img class="card-img-top" src="{{ picture.mini_picture.url }}" alt="Card image cap">
-  <div class="card-body">
-    <h5 class="card-title">{{ picture.name }}</h5>
-     <p class="card-text">{{ picture.desc }}</p>
-    <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Цена: {{ picture.price }} сом</p>
-    <a href="#" class="btn btn-primary">Заказать</a>
+    <div class="card" style="width: 18rem;">
+      <img class="card-img-top" src="{{ product.mini_picture.url }}" alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title">{{ product.name }}</h5>
+        <p class="card-text">{{ product.desc }}</p>
+        <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Цена: {{ product.price }} сом</p>
+        <a href="#" class="btn btn-primary">Заказать</a>
+      </div>
+    </div>
   </div>
+
 </div>
 
-  </div>
-</div>
 {% endblock %}

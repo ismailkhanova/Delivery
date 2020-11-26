@@ -5,7 +5,7 @@
 <ul class="nav flex-column">
   <li class="nav-item">
     {% for category in cat_bar %}
-    <a class="nav-link" href="{% url 'product_category' pk=category.pk %}">{{ category.name }}</a>
+    <a class="nav-link" href="{% url 'product_category' slug=category.slug %}">{{ category.name }}</a>
     {% endfor %}
   </li>
 </ul>

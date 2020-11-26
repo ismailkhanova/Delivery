@@ -9,7 +9,7 @@
     <h5 class="card-title">{{ str.name }}</h5>
       <p class="card-text">{{ str.desc }}</p>
 
-    <a href="{% url 'store_products' pk=str.pk %}" class="btn btn-primary">Посмотреть каталог</a>
+    <a href="{% url 'store_products' slug=str.slug %}" class="btn btn-primary">Посмотреть каталог</a>
 
   </div>
 </div>

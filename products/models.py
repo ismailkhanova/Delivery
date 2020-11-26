@@ -44,7 +44,7 @@ class Customer(models.Model):
 
 class Store(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
-    slug = models.SlugField(max_length=200, db_index=True)
+    slug = models.SlugField(max_length=255, db_index=True)
     desc = models.CharField(max_length=255, verbose_name="Описание")
     avatar = models.ImageField(upload_to="store_avatars/", verbose_name="Аватар", null=False,
                                blank=True, default="store_avatars/no-image.jpg")
@@ -61,7 +61,8 @@ class Store(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
-    slug = models.SlugField(max_length=200, db_index=True, unique=True)
+    slug = models.SlugField(max_length=255, db_index=True)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, verbose_name="Магазин")
 
     def __str__(self):
         return self.name
@@ -73,7 +74,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
-    slug = models.SlugField(max_length=200, db_index=True)
+    slug = models.SlugField(max_length=255, db_index=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория")
     store = models.ForeignKey(Store, on_delete=models.CASCADE, verbose_name="Магазин")
     price = models.DecimalField(decimal_places=2, max_digits=19, verbose_name="Цена")

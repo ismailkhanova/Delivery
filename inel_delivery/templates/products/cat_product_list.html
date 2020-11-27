@@ -7,7 +7,7 @@
 <ul class="nav flex-column">
   <li class="nav-item">
     {% for category in categories %}
-    <a class="nav-link" href="{% url 'cat_products' slug=category.slug %}">{{ category.name }}</a>
+    <a class="nav-link" href="{% url 'products:cat_products' slug=category.slug %}">{{ category.name }}</a>
     {% endfor %}
   </li>
 </ul>
@@ -21,7 +21,7 @@
         <h5 class="card-title">{{ product.name }}</h5>
         <p class="card-text">{{ product.desc }}</p>
         <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Цена: {{ product.price }} сом</p>
-        <a href="{% url 'product_detail' pk=product.pk %}" class="btn btn-primary">Посмотреть товар</a>
+        <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary">Посмотреть товар</a>
       </div>
     </div>
   </div>

@@ -1,26 +1,15 @@
 from django.contrib import admin
 
-from products.models import Deliveryman, Customer, Store, Category, Product, Order, OrderProduct
-
-
-admin.site.register(Deliveryman)
-
-admin.site.register(Customer)
+from products.models import Store, Category, Product, Order, OrderProduct
 
 
 class StoreAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
-admin.site.register(Store, StoreAdmin)
-
-
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
     prepopulated_fields = {'slug': ('name',)}
-
-
-admin.site.register(Category, CategoryAdmin)
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -30,9 +19,15 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['created_date', 'status']
+    list_filter = ['created_date', 'status']
+    search_fields = ['user__username', 'ref_code']
+
+
+admin.site.register(Store, StoreAdmin)
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
-
-admin.site.register(Order)
-
+admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderProduct)
 

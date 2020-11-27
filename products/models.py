@@ -107,7 +107,7 @@ class OrderProduct(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Продукт")
     amount = models.IntegerField(default=1, verbose_name="Количество")
-    ordered = models.BooleanField(default=False)
+    ordered = models.BooleanField(default=False, verbose_name="Заказ оформлен")
 
     def get_total_item_price(self):
         return self.amount * self.product.price
@@ -133,7 +133,10 @@ class Order(models.Model):
     products = models.ManyToManyField(OrderProduct, verbose_name="Продукты")
     created_date = models.DateTimeField(verbose_name="Дата")
     status = models.CharField(max_length=16, default='Новый', choices=STATUS, verbose_name="Статус")
-    ordered = models.BooleanField(default=False, verbose_name="Заказано")
+    ordered = models.BooleanField(default=False, verbose_name="Заказ оформлен")
+    name = models.CharField(max_length=255, null=True, verbose_name="ИФО")
+    phone = models.CharField(max_length=255, null=True, verbose_name='Номер телефона')
+    address = models.TextField(null=True, verbose_name="Адрес")
 
     def get_total(self):
         total = 0

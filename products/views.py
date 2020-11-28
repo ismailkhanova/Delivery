@@ -1,12 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView, View
+from django.urls.base import reverse_lazy
+from django.views.generic import ListView, DetailView, View, FormView
 from .models import Store, Product, Category, OrderProduct, Order
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
+from products.forms import OrderForm
 
 
 class StoreList(ListView):
@@ -104,7 +106,7 @@ def remove_from_cart(request, slug):
             messages.info(request, "Этого продукта нет в вашей корзине.")
             return redirect("products:product", slug=slug)
     else:
-        messages.info(request, "У вас нет активного заказа")
+        messages.info(request, "У вас нет активного заказа.")
         return redirect("products:product", slug=slug)
 
 
@@ -129,5 +131,63 @@ def remove_single_item_from_cart(request, slug):
             messages.info(request, "Этого продукта нет в вашей корзине.")
             return redirect("products:product", slug=slug)
     else:
-        messages.info(request, "У вас нет активного заказа")
+        messages.info(request, "У вас нет активного заказа.")
         return redirect("products:product", slug=slug)
+
+
+class OrderFormView(FormView):
+    template_name = 'products/order.html'
+    form_class = OrderForm
+    success_url = reverse_lazy('products:store_list')
+
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            form = OrderForm()
+            context = {
+                'form': form,
+                'order': order
+            }
+            return render(self.request, "products/order.html", context)
+        except ObjectDoesNotExist:
+            messages.info(self.request, "У вас нет активного заказа.")
+            return redirect("products:order")
+
+    def post(self, *args, **kwargs):
+        form = OrderForm(self.request.POST or None)
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            if form.is_valid():
+                name = form.cleaned_data.get('name')
+                phone = form.cleaned_data.get('phone')
+                address = form.cleaned_data.get('address')
+                if name and phone and address:
+                    order.name = name
+                    order.phone = phone
+                    order.address = address
+                    order.ordered = True
+                    order.save()
+                    order_products = order.products.all()
+                    order_products.update(ordered=True)
+                    for product in order_products:
+                        product.save()
+                else:
+                    messages.warning(self.request, "Заполните все поля.")
+                    return redirect("products:order")
+                messages.warning(self.request, "Спасибо за оформление заказа, мы надеемся что вы не проживёте очень "
+                                               "долго)")
+                return redirect("products:order-summary")
+            messages.warning(self.request, "Удостоверьтесь что вы заполнили всё правильно.")
+            return redirect("products:order")
+        except ObjectDoesNotExist:
+            messages.warning(self.request, "У вас нет активного заказа.")
+            return redirect("products:order-summary")
+
+
+class OrderedList(ListView):
+    model = Order
+    template_name = 'products/ordered.html'
+    context_object_name = 'ordered_list'
+
+    def get_queryset(self):
+        return Order.objects.filter(ordered=True)

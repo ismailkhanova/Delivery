@@ -182,3 +182,12 @@ class OrderFormView(FormView):
         except ObjectDoesNotExist:
             messages.warning(self.request, "У вас нет активного заказа.")
             return redirect("products:order-summary")
+
+
+class OrderedList(ListView):
+    model = Order
+    template_name = 'products/ordered.html'
+    context_object_name = 'ordered_list'
+
+    def get_queryset(self):
+        return Order.objects.filter(ordered=True)

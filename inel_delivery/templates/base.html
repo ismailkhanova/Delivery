@@ -49,10 +49,12 @@
               <a class="nav-link" href="{% url 'products:order-summary' %}">Корзина
               <span class="badge red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span></a>
             </li>
+          {% if perms.products.view_orders_page %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'products:ordered' %}">Заказы
               <span class="badge red z-depth-1 mr-1"> {{ request.user|ordered_count }} </span></a>
             </li>
+          {% endif %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'about' %}">About</a>
             </li>

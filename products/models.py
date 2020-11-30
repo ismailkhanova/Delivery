@@ -150,6 +150,7 @@ class Order(models.Model):
     class Meta:
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
+        permissions = (("view_orders_page", "Can view the orders page"),)
 
 # picture = Deliveryman.objects.all()[0]
 # print(picture.mini_avatar.url)

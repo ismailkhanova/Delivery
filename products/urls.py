@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (StoreList, ProductCategory, ProductDetail, StoreProduct
     , OrderSummaryView, add_to_cart, remove_from_cart, remove_single_item_from_cart
-    , OrderFormView, OrderedList, OrderCustomerList)
+    , OrderFormView, OrderedList, OrderCustomerList, SearchProductsView)
 
 app_name = 'products'
 
@@ -17,4 +17,5 @@ urlpatterns = [
     path("order/", OrderFormView.as_view(), name="order"),
     path("ordered/", OrderedList.as_view(), name="ordered"),
     path("my", OrderCustomerList.as_view(), name="order_owner_list"),
+    path('search/', SearchProductsView.as_view(), name='search_products'),
 ]

@@ -18,10 +18,9 @@
     <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
 
     {% block css %}
-
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <!-- Latest compiled and minified Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
 
     <!-- Your stuff: Third-party CSS libraries go here -->
 
@@ -82,6 +81,10 @@
             {% endif %}
           </ul>
         </div>
+      <form action="{% url 'products:search_products' %}" method="get">
+          <input name="q" type="text" placeholder="Поиск продукта..." aria-label="Search" style="text-align: right; margin-right: 20px; width: 300px;">
+          <button href="{% url 'products:search_products' %}" class="btn btn-outline-white btn-md my-0 ml-sm-2" type="submit"><i class="fas fa-search"></i></button>
+      </form>
       </nav>
 
     </div>

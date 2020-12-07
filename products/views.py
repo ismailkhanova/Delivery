@@ -1,17 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-<<<<<<< HEAD
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
-from django.urls.base import reverse_lazy
-from django.views.generic import ListView, DetailView, View, FormView
-from .models import Store, Product, Category, OrderProduct, Order
-=======
 from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse_lazy
 from django.views.generic import ListView, DetailView, View, FormView, UpdateView
 from .models import Store, Product, Category, OrderProduct, Order, Deliveryman
->>>>>>> b5027c32f310fc4a7c5ff46a6c4fe7baf11e9826
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -143,11 +136,7 @@ def remove_single_item_from_cart(request, slug):
         return redirect("products:product", slug=slug)
 
 
-<<<<<<< HEAD
-class OrderFormView(FormView):
-=======
 class OrderFormView(LoginRequiredMixin, FormView):
->>>>>>> b5027c32f310fc4a7c5ff46a6c4fe7baf11e9826
     template_name = 'products/order.html'
     form_class = OrderForm
     success_url = reverse_lazy('products:store_list')
@@ -186,12 +175,7 @@ class OrderFormView(LoginRequiredMixin, FormView):
                 else:
                     messages.warning(self.request, "Заполните все поля.")
                     return redirect("products:order")
-<<<<<<< HEAD
-                messages.warning(self.request, "Спасибо за оформление заказа, мы надеемся что вы не проживёте очень "
-                                               "долго)")
-=======
                 messages.warning(self.request, "Спасибо за оформление заказа!")
->>>>>>> b5027c32f310fc4a7c5ff46a6c4fe7baf11e9826
                 return redirect("products:store_list")
             messages.warning(self.request, "Удостоверьтесь что вы заполнили всё правильно.")
             return redirect("products:order")
@@ -200,22 +184,14 @@ class OrderFormView(LoginRequiredMixin, FormView):
             return redirect("products:order-summary")
 
 
-<<<<<<< HEAD
-class OrderedList(PermissionRequiredMixin, ListView):
-=======
 class OrderedList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
->>>>>>> b5027c32f310fc4a7c5ff46a6c4fe7baf11e9826
     model = Order
     permission_required = 'products.view_orders_page'
     template_name = 'products/ordered.html'
     context_object_name = 'ordered_list'
 
     def get_queryset(self):
-<<<<<<< HEAD
-        return Order.objects.filter(ordered=True)
-=======
         return Order.objects.filter(ordered=True, deliveryman=None)
->>>>>>> b5027c32f310fc4a7c5ff46a6c4fe7baf11e9826
 
 
 class OrderCustomerList(LoginRequiredMixin, ListView):
@@ -227,21 +203,6 @@ class OrderCustomerList(LoginRequiredMixin, ListView):
         return Order.objects.filter(user=self.request.user)
 
 
-<<<<<<< HEAD
-class SearchProductsView(ListView):
-    model = Product
-    template_name = 'products/search_products.html'
-    context_object_name = 'search_products'
-
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        search_products = Product.objects.filter(
-          Q(name__icontains=query) | Q(desc__icontains=query) | Q(price__icontains=query)
-        )
-        return search_products
-
-
-=======
 @login_required
 def take_order(request, pk):
     order_pk = get_object_or_404(Order, pk=pk)
@@ -286,4 +247,16 @@ class DeliveryRunningOrderList(LoginRequiredMixin, PermissionRequiredMixin, List
     def get_queryset(self):
         deliveryman = Deliveryman.objects.get(user=self.request.user)
         return Order.objects.filter(deliveryman=deliveryman)
->>>>>>> b5027c32f310fc4a7c5ff46a6c4fe7baf11e9826
+
+
+class SearchProductsView(ListView):
+    model = Product
+    template_name = 'products/search_products.html'
+    context_object_name = 'search_products'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        search_products = Product.objects.filter(
+          Q(name__icontains=query) | Q(desc__icontains=query) | Q(price__icontains=query)
+        )
+        return search_products

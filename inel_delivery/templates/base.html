@@ -45,20 +45,25 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
+          {% if request.user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'products:order-summary' %}">Корзина
               <span class="badge red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span></a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'products:order_owner_list' %}">Мои заказы
+              <span class="badge red z-depth-1 mr-1"> {{ request.user|my_order_count }} </span></a>
+            </li>
             {% if perms.products.view_orders_page %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'products:ordered' %}">Заказы
+                <a class="nav-link" href="{% url 'products:ordered' %}">Новые заказы
                 <span class="badge red z-depth-1 mr-1"> {{ request.user|ordered_count }} </span></a>
               </li>
-            {% endif %}
-            {% if request.user.is_authenticated %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'products:order_owner_list' %}">Мои заказы</a>
+               <li class="nav-item">
+                <a class="nav-link" href="{% url 'products:orders_taken' %}">Активные заказы
+                <span class="badge red z-depth-1 mr-1"> {{ request.user|orders_taken_count }} </span></a>
               </li>
+            {% endif %}
               <li class="nav-item">
                 {# URL provided by django-allauth/account/urls.py #}
                 <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">Мой профиль</a>

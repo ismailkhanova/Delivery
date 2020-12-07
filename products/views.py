@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse_lazy
 from django.views.generic import ListView, DetailView, View, FormView, UpdateView
-from .models import Store, Product, Category, OrderProduct, Order
+from .models import Store, Product, Category, OrderProduct, Order, Deliveryman
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -68,7 +68,7 @@ class OrderSummaryView(LoginRequiredMixin, View):
 @login_required
 def add_to_cart(request, slug):
     product = get_object_or_404(Product, slug=slug)
-    order_product, created = OrderProduct.objects.get_or_create(user=request.user, product=product)
+    order_product, created = OrderProduct.objects.get_or_create(user=request.user, product=product, ordered=False)
     order_qs = Order.objects.filter(user=request.user, ordered=False)
     if order_qs.exists():
         order = order_qs[0]
@@ -135,7 +135,7 @@ def remove_single_item_from_cart(request, slug):
         return redirect("products:product", slug=slug)
 
 
-class OrderFormView(FormView):
+class OrderFormView(LoginRequiredMixin, FormView):
     template_name = 'products/order.html'
     form_class = OrderForm
     success_url = reverse_lazy('products:store_list')
@@ -174,8 +174,7 @@ class OrderFormView(FormView):
                 else:
                     messages.warning(self.request, "Заполните все поля.")
                     return redirect("products:order")
-                messages.warning(self.request, "Спасибо за оформление заказа, мы надеемся что вы не проживёте очень "
-                                               "долго)")
+                messages.warning(self.request, "Спасибо за оформление заказа!")
                 return redirect("products:store_list")
             messages.warning(self.request, "Удостоверьтесь что вы заполнили всё правильно.")
             return redirect("products:order")
@@ -184,14 +183,14 @@ class OrderFormView(FormView):
             return redirect("products:order-summary")
 
 
-class OrderedList(PermissionRequiredMixin, ListView):
+class OrderedList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Order
     permission_required = 'products.view_orders_page'
     template_name = 'products/ordered.html'
     context_object_name = 'ordered_list'
 
     def get_queryset(self):
-        return Order.objects.filter(ordered=True)
+        return Order.objects.filter(ordered=True, deliveryman=None)
 
 
 class OrderCustomerList(LoginRequiredMixin, ListView):
@@ -201,3 +200,49 @@ class OrderCustomerList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+
+@login_required
+def take_order(request, pk):
+    order_pk = get_object_or_404(Order, pk=pk)
+    if request.user.has_perm('products.take_orders') and Deliveryman.objects.filter(user=request.user).exists():
+        order = Order.objects.get(pk=order_pk.pk)
+        if order.deliveryman is None:
+            deliveryman = Deliveryman.objects.get(user=request.user)
+            order.deliveryman = deliveryman
+            order.status = "В ожидании"
+            order.save()
+            messages.info(request, "Вы взяли заказ.")
+            return redirect("products:orders_taken")
+        else:
+            messages.info(request, "Вы не можете взять этот заказ.")
+            return redirect("products:ordered")
+    else:
+        messages.info(request, "У вас недостаточно прав для этого.")
+        return redirect("products:ordered")
+
+
+@login_required
+def remove_order(request, pk):
+    order_pk = get_object_or_404(Order, pk=pk)
+    if request.user.has_perm('products.take_orders') and Deliveryman.objects.filter(user=request.user).exists():
+        order = Order.objects.get(pk=order_pk.pk)
+        order.deliveryman = None
+        order.status = "Новый"
+        order.save()
+        messages.info(request, "Вы отказались от заказа.")
+        return redirect("products:orders_taken")
+    else:
+        messages.info(request, "У вас недостаточно прав для этого.")
+        return redirect("products:ordered")
+
+
+class DeliveryRunningOrderList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = Order
+    template_name = 'products/running_order_list.html'
+    permission_required = 'products.view_orders_page'
+    context_object_name = 'take_order_list'
+
+    def get_queryset(self):
+        deliveryman = Deliveryman.objects.get(user=self.request.user)
+        return Order.objects.filter(deliveryman=deliveryman)

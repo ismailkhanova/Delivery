@@ -26,6 +26,9 @@
             <span>Всего:</span>
             <strong>{{ ordered.get_total }} сом</strong>
         </li>
+        {% if perms.products.take_orders %}
+          <a href="{% url 'products:take-order' pk=ordered.pk %}" class="btn btn-primary">Взять заказ</a>
+        {% endif %}
       </ul>
     </div>
   {% endfor %}

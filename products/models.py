@@ -123,13 +123,24 @@ class Order(models.Model):
             total += product.get_final_price()
         return total
 
+    def get_take_order_url(self):
+        return reverse("products:take-order", kwargs={
+            'pk': self.pk
+        })
+
+    def get_remove_order_url(self):
+        return reverse("products:remove-order", kwargs={
+            'pk': self.pk
+        })
+
     def __str__(self):
         return self.user.username
 
     class Meta:
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
-        permissions = (("view_orders_page", "Can view the orders page"),)
+        permissions = (("view_orders_page", "Can view the orders page"),
+                       ("take_orders", "Can take orders"),)
 
 # picture = Deliveryman.objects.all()[0]
 # print(picture.mini_avatar.url)

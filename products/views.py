@@ -1,15 +1,14 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse_lazy
-from django.views.generic import ListView, DetailView, View, FormView
+from django.views.generic import ListView, DetailView, View, FormView, UpdateView
 from .models import Store, Product, Category, OrderProduct, Order
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from products.forms import OrderForm
-
 
 class StoreList(ListView):
     model = Store
@@ -176,7 +175,7 @@ class OrderFormView(FormView):
                     return redirect("products:order")
                 messages.warning(self.request, "Спасибо за оформление заказа, мы надеемся что вы не проживёте очень "
                                                "долго)")
-                return redirect("products:order-summary")
+                return redirect("products:store_list")
             messages.warning(self.request, "Удостоверьтесь что вы заполнили всё правильно.")
             return redirect("products:order")
         except ObjectDoesNotExist:
@@ -184,10 +183,23 @@ class OrderFormView(FormView):
             return redirect("products:order-summary")
 
 
-class OrderedList(ListView):
+class OrderedList(PermissionRequiredMixin, ListView):
     model = Order
+    permission_required = 'products.view_orders_page'
     template_name = 'products/ordered.html'
     context_object_name = 'ordered_list'
 
     def get_queryset(self):
         return Order.objects.filter(ordered=True)
+
+
+class OrderCustomerList(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = 'products/order_customer_list.html'
+    context_object_name = 'ordered_list'
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+
+
+

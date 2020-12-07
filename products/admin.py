@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from products.models import Store, Category, Product, Order, OrderProduct
+from products.models import Deliveryman, Store, Category, Product, Order, OrderProduct
 
 
 class StoreAdmin(admin.ModelAdmin):
@@ -25,6 +25,7 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ['user__username', 'ref_code']
 
 
+admin.site.register(Deliveryman)
 admin.site.register(Store, StoreAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)

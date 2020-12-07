@@ -3,7 +3,7 @@
 
 {% block content %}
 
-  {% for ordered in ordered_list %}
+  {% for ordered in take_order_list %}
     <div class="card-body">
       <ul class="list-group mb-3 z-depth-1">
         <li class="list-group-item d-flex justify-content-between lh-condensed">
@@ -26,9 +26,7 @@
             <span>Всего:</span>
             <strong>{{ ordered.get_total }} сом</strong>
         </li>
-        {% if perms.products.take_orders %}
-          <a href="{% url 'products:take-order' pk=ordered.pk %}" class="btn btn-primary">Взять заказ</a>
-        {% endif %}
+        <a href="{% url 'products:remove-order' pk=ordered.pk %}" class="btn btn-primary">Отказаться от заказа</a>
       </ul>
     </div>
   {% endfor %}

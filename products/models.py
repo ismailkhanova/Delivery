@@ -5,39 +5,17 @@ from django.conf import settings
 from django.shortcuts import reverse
 
 
-# class Deliveryman(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
-#     phone = models.CharField(max_length=255, verbose_name='Номер телефона')
-#     avatar = models.ImageField(upload_to="del_avatars/", verbose_name="Аватар", null=True,
-#                                blank=True)  # нужно переделать потом null на False,
-#     # добавить картинку по умолчанию
-#     mini_avatar = ImageSpecField(source="avatar", processors=[ResizeToFill(100, 50)],
-#                                  format="JPEG", options={"quality": 80})
-#
-#     def __str__(self):
-#         name = str(self.user)
-#         return name
-#
-#     class Meta:
-#         verbose_name = "Курьер"
-#         verbose_name_plural = "Курьеры"
-#
-#
-# class Customer(models.Model):
-#     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь")
-#     avatar = models.ImageField(upload_to="cus_avatars/", verbose_name="Аватар", blank=True,
-#                                default="cus_avatars/no-image.png")
-#     mini_avatar = ImageSpecField(source="avatar", processors=[ResizeToFill(100, 50)],
-#                                  format="JPEG", options={"quality": 80})
-#     phone = models.CharField(max_length=255, null=True, blank=True, verbose_name='Номер телефона')
-#     address = models.TextField(null=True, blank=True, verbose_name="Адрес")
-#
-#     def __str__(self):
-#         return self.user.username
-#
-#     class Meta:
-#         verbose_name = "Заказчик"
-#         verbose_name_plural = "Заказчики"
+class Deliveryman(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь")
+    phone = models.CharField(max_length=255, verbose_name='Номер телефона')
+
+    def __str__(self):
+        name = str(self.user)
+        return name
+
+    class Meta:
+        verbose_name = "Курьер"
+        verbose_name_plural = "Курьеры"
 
 
 class Store(models.Model):
@@ -137,6 +115,7 @@ class Order(models.Model):
     name = models.CharField(max_length=255, null=True, verbose_name="ИФО")
     phone = models.CharField(max_length=255, null=True, verbose_name='Номер телефона')
     address = models.TextField(null=True, verbose_name="Адрес")
+    deliveryman = models.ForeignKey(Deliveryman, blank=True, null=True, on_delete=models.CASCADE, verbose_name="Курьер")
 
     def get_total(self):
         total = 0
@@ -144,13 +123,24 @@ class Order(models.Model):
             total += product.get_final_price()
         return total
 
+    def get_take_order_url(self):
+        return reverse("products:take-order", kwargs={
+            'pk': self.pk
+        })
+
+    def get_remove_order_url(self):
+        return reverse("products:remove-order", kwargs={
+            'pk': self.pk
+        })
+
     def __str__(self):
         return self.user.username
 
     class Meta:
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
-        permissions = (("view_orders_page", "Can view the orders page"),)
+        permissions = (("view_orders_page", "Can view the orders page"),
+                       ("take_orders", "Can take orders"),)
 
 # picture = Deliveryman.objects.all()[0]
 # print(picture.mini_avatar.url)

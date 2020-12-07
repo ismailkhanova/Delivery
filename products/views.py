@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse_lazy
-from django.views.generic import ListView, DetailView, View, FormView
+from django.views.generic import ListView, DetailView, View, FormView, UpdateView
 from .models import Store, Product, Category, OrderProduct, Order
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -191,5 +191,15 @@ class OrderedList(PermissionRequiredMixin, ListView):
 
     def get_queryset(self):
         return Order.objects.filter(ordered=True)
+
+
+class OrderCustomerList(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = 'products/order_customer_list.html'
+    context_object_name = 'ordered_list'
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+
 
 

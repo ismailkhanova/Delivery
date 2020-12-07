@@ -10,7 +10,7 @@
           <span class="text-muted">Информация:</span>
           <span>{{ ordered.name }}</span>|<span>{{ ordered.phone }}</span>|
           <span>{{ ordered.address }}</span>|<span>{{ ordered.created_date }}</span>|
-          <strong><span>{{ ordered.status }} </span></strong>
+          <strong><span>{{ ordered.status }}</span></strong>
         </li>
         {% for order_product in ordered.products.all %}
         <li class="list-group-item d-flex justify-content-between lh-condensed">

@@ -16,5 +16,5 @@ urlpatterns = [
     path("remove-item-from-cart/<slug>/", remove_single_item_from_cart, name="remove-single-item-from-cart"),
     path("order/", OrderFormView.as_view(), name="order"),
     path("ordered/", OrderedList.as_view(), name="ordered"),
-    path("my", OrderCustomerList.as_view(), name="order_owner_list"),
+    path("my_orders/", OrderCustomerList.as_view(), name="order_owner_list"),
 ]

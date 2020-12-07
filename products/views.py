@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from products.forms import OrderForm
 
+
 class StoreList(ListView):
     model = Store
     template_name = 'products/store_list.html'
@@ -200,6 +201,3 @@ class OrderCustomerList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
-
-
-

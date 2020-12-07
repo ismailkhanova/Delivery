@@ -31,7 +31,7 @@
                 <a href="{% url 'products:add-to-cart' order_product.product.slug %}">+</a>
               </td>
               <td>{{ order_product.get_total_item_price }} сом
-                <a style='color: red;' href="{% url 'products:remove-from-cart' order_product.product.slug %}">#</a>
+                <a style='color: red;' href="{% url 'products:remove-from-cart' order_product.product.slug %}"><i class="fas fa-trash-alt"></i></a>
               </td>
             </tr>
           {% empty %}

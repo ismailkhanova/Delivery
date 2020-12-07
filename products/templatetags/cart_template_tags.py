@@ -34,8 +34,10 @@ def my_order_count(user):
 @register.filter
 def orders_taken_count(user):
     if user.is_authenticated:
-        deliveryman = Deliveryman.objects.get(user=user.id)
-        qs = Order.objects.filter(deliveryman=deliveryman)
-        if qs.exists():
-            return qs.count()
+        if Deliveryman.objects.filter(user=user.id).exists():
+            deliveryman = Deliveryman.objects.get(user=user.id)
+            qs = Order.objects.filter(deliveryman=deliveryman)
+            if qs.exists():
+                return qs.count()
+        return 0
     return 0

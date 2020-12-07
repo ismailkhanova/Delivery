@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse_lazy
 from django.views.generic import ListView, DetailView, View, FormView, UpdateView
@@ -246,3 +247,16 @@ class DeliveryRunningOrderList(LoginRequiredMixin, PermissionRequiredMixin, List
     def get_queryset(self):
         deliveryman = Deliveryman.objects.get(user=self.request.user)
         return Order.objects.filter(deliveryman=deliveryman)
+
+
+class SearchProductsView(ListView):
+    model = Product
+    template_name = 'products/search_products.html'
+    context_object_name = 'search_products'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        search_products = Product.objects.filter(
+          Q(name__icontains=query) | Q(desc__icontains=query) | Q(price__icontains=query)
+        )
+        return search_products

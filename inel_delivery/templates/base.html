@@ -63,10 +63,16 @@
                 <span class="badge red z-depth-1 mr-1"> {{ request.user|orders_taken_count }} </span></a>
               </li>
             {% endif %}
-              <li class="nav-item">
-                {# URL provided by django-allauth/account/urls.py #}
-                <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">Мой профиль</a>
+            {% if perms.products.view_app_page %}
+               <li class="nav-item">
+                <a class="nav-link" href="{% url 'products:app-list' %}">Заявки
+                <span class="badge red z-depth-1 mr-1"> {{ request.user|delivery_app_count }} </span></a>
               </li>
+            {% endif %}
+{#              <li class="nav-item">#}
+                {# URL provided by django-allauth/account/urls.py #}
+{#                <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">Мой профиль</a>#}
+{#              </li>#}
               <li class="nav-item">
                 {# URL provided by django-allauth/account/urls.py #}
                 <a class="nav-link" href="{% url 'account_logout' %}">Выйти</a>
@@ -91,7 +97,7 @@
 
     </div>
 
-    <div class="container">
+    <div class="container-fluid">
 
       {% if messages %}
           {% for message in messages %}

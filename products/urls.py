@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (StoreList, ProductCategory, ProductDetail, StoreProduct
 , OrderSummaryView, add_to_cart, remove_from_cart, remove_single_item_from_cart
 , OrderFormView, OrderedList, OrderCustomerList, take_order, DeliveryRunningOrderList
-, remove_order, SearchProductsView)
+, remove_order, SearchProductsView, DeliveryFormView, DeliveryAppList, accept_app, refuse_app)
 
 app_name = 'products'
 
@@ -22,4 +22,8 @@ urlpatterns = [
     path("take-order/<int:pk>/", take_order, name="take-order"),
     path("remove-order/<int:pk>/", remove_order, name="remove-order"),
     path('search/', SearchProductsView.as_view(), name='search_products'),
+    path("delivery-form/", DeliveryFormView.as_view(), name="delivery-form"),
+    path("app-list/", DeliveryAppList.as_view(), name="app-list"),
+    path("accept_app/<int:pk>/", accept_app, name="accept_app"),
+    path("refuse_app/<int:pk>/", refuse_app, name="refuse_app"),
 ]

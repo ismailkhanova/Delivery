@@ -4,12 +4,13 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse_lazy
 from django.views.generic import ListView, DetailView, View, FormView, UpdateView
-from .models import Store, Product, Category, OrderProduct, Order, Deliveryman
+from .models import Store, Product, Category, OrderProduct, Order, Deliveryman, ApplicationForm
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
-from products.forms import OrderForm
+from products.forms import OrderForm, DeliveryForm
+from django.contrib.auth.models import Group
 
 
 class StoreList(ListView):
@@ -257,6 +258,108 @@ class SearchProductsView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q')
         search_products = Product.objects.filter(
-          Q(name__icontains=query) | Q(desc__icontains=query) | Q(price__icontains=query)
+            Q(name__icontains=query) | Q(desc__icontains=query) | Q(price__icontains=query)
         )
         return search_products
+
+
+class DeliveryFormView(LoginRequiredMixin, FormView):
+    template_name = 'products/delivery_form.html'
+    form_class = DeliveryForm
+    success_url = reverse_lazy('products:store_list')
+
+    def get(self, *args, **kwargs):
+        try:
+            form = DeliveryForm()
+            context = {
+                'form': form
+            }
+            return render(self.request, "products/delivery_form.html", context)
+        except ObjectDoesNotExist:
+            messages.info(self.request, "Произошла ошибка, попробуйте сново.")
+            return redirect("products:store_list")
+
+    def post(self, *args, **kwargs):
+        form = DeliveryForm(self.request.POST or None)
+        try:
+            if not ApplicationForm.objects.filter(user=self.request.user).exists():
+                application_form = ApplicationForm.objects.create(user=self.request.user)
+                if form.is_valid():
+                    name = form.cleaned_data.get('name')
+                    phone = form.cleaned_data.get('phone')
+                    reason = form.cleaned_data.get('reason')
+                    if name and phone and reason:
+                        application_form.name = name
+                        application_form.phone = phone
+                        application_form.reason = reason
+                        application_form.save()
+                    else:
+                        messages.warning(self.request, "Заполните все поля.")
+                        return redirect("products:delivery-form")
+                    messages.warning(self.request, "Спасибо, ожидайте ответа!")
+                    return redirect("products:store_list")
+                else:
+                    messages.warning(self.request, "Удостоверьтесь что вы заполнили всё правильно.")
+                    return redirect("products:delivery-form")
+            else:
+                messages.warning(self.request, "Вы уже подали заявку, ждите ответа.")
+                return redirect("products:delivery-form")
+        except ObjectDoesNotExist:
+            messages.warning(self.request, "Произошла ошибка, попробуйте сново.")
+            return redirect("products:store_list")
+
+
+class DeliveryAppList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = ApplicationForm
+    permission_required = 'products.view_app_page'
+    template_name = 'products/delivery_app_list.html'
+    context_object_name = 'app_list'
+
+    def get_queryset(self):
+        return ApplicationForm.objects.filter(status="В ожидании")
+
+
+@login_required
+def accept_app(request, pk):
+    app_pk = get_object_or_404(ApplicationForm, pk=pk)
+    if request.user.has_perm('accept_app'):
+        app = ApplicationForm.objects.get(pk=app_pk.pk)
+        if app.status == "В ожидании":
+            if not Deliveryman.objects.filter(user=app.user).exists():
+                app.status = "Принято"
+                app.save()
+                deliveryman = Deliveryman.objects.create(user=app.user)
+                deliveryman.name = app.name
+                deliveryman.phone = app.phone
+                deliveryman.save()
+                deliveryman_group = Group.objects.get(name='deliveryman')
+                deliveryman_group.user_set.add(app.user)
+                messages.info(request, "Вы приняли заявку.")
+                return redirect("products:app-list")
+            else:
+                messages.info(request, "Этот пользователь уже зарегестрирован в базе данных.")
+                return redirect("products:app-list")
+        else:
+            messages.info(request, "Эта заявка уже обработана.")
+            return redirect("products:app-list")
+    else:
+        messages.info(request, "У вас недостаточно прав для этого.")
+        return redirect("products:app-list")
+
+
+@login_required
+def refuse_app(request, pk):
+    app_pk = get_object_or_404(ApplicationForm, pk=pk)
+    if request.user.has_perm('accept_app'):
+        app = ApplicationForm.objects.get(pk=app_pk.pk)
+        if app.status == "В ожидании":
+            app.status = "Отказано"
+            app.save()
+            messages.info(request, "Вы отказали в заявке.")
+            return redirect("products:app-list")
+        else:
+            messages.info(request, "Эта заявка уже обработана.")
+            return redirect("products:app-list")
+    else:
+        messages.info(request, "У вас недостаточно прав для этого.")
+        return redirect("products:app-list")

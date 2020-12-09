@@ -7,6 +7,7 @@ from django.shortcuts import reverse
 
 class Deliveryman(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь")
+    name = models.CharField(max_length=255, verbose_name="ИФО")
     phone = models.CharField(max_length=255, verbose_name='Номер телефона')
 
     def __str__(self):
@@ -16,6 +17,39 @@ class Deliveryman(models.Model):
     class Meta:
         verbose_name = "Курьер"
         verbose_name_plural = "Курьеры"
+
+
+class ApplicationForm(models.Model):
+    STATUS = (
+        ('В ожидании', 'Заявка в ожидании'),
+        ('Принято', 'Заявка принята'),
+        ('Отказано', 'Заявка отказана')
+    )
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь")
+    name = models.CharField(max_length=255, verbose_name="ИФО")
+    phone = models.CharField(max_length=255, verbose_name='Номер телефона')
+    reason = models.TextField(verbose_name='Причина')
+    status = models.CharField(max_length=16, default='В ожидании', choices=STATUS, verbose_name="Статус")
+
+    def get_accept_app_url(self):
+        return reverse("products:accept_app", kwargs={
+            'pk': self.pk
+        })
+
+    def get_refuse_app_url(self):
+        return reverse("products:refuse_app", kwargs={
+            'pk': self.pk
+        })
+
+    def __str__(self):
+        name = str(self.user)
+        return name
+
+    class Meta:
+        verbose_name = "Заявка"
+        verbose_name_plural = "Заявки"
+        permissions = (("view_app_page", "Can view the applications page"),
+                       ("accept_app", "Can accept applications"),)
 
 
 class Store(models.Model):

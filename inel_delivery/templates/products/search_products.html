@@ -9,7 +9,7 @@
         <h5 class="card-title">{{ product.name }}</h5>
         <p class="card-text">{{ product.desc }}</p>
         <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Цена: {{ product.price }} сом</p>
-         <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Магазин: {{ product.store }}</p>
+        <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Магазин: {{ product.store }}</p>
         <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary">Посмотреть товар</a>
       </div>
     </div>

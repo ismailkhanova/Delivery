@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  {% for app in app_list %}
+    <div class="card-body">
+      <ul class="list-group mb-3 z-depth-1">
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <span class="text-muted">Информация:</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <span>{{ app.name }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <span>{{ app.phone }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <span>{{ app.reason }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <strong><span>{{ app.status }}</span></strong>
+        </li>
+        {% if perms.products.accept_app %}
+          <a href="{% url 'products:accept_app' pk=app.pk %}" class="btn btn-primary">Принять</a>
+          <a href="{% url 'products:refuse_app' pk=app.pk %}" class="btn btn-primary">Отказать</a>
+        {% endif %}
+      </ul>
+    </div>
+  {% endfor %}
+
+{% endblock %}

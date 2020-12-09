@@ -1,5 +1,5 @@
 from django import template
-from products.models import Order, Deliveryman
+from products.models import Order, Deliveryman, ApplicationForm
 
 register = template.Library()
 
@@ -40,4 +40,13 @@ def orders_taken_count(user):
             if qs.exists():
                 return qs.count()
         return 0
+    return 0
+
+
+@register.filter
+def delivery_app_count(user):
+    if user.is_authenticated:
+        qs = ApplicationForm.objects.filter(status="В ожидании")
+        if qs.exists():
+            return qs.count()
     return 0

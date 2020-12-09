@@ -3,22 +3,25 @@
 {% block content %}
 
 <div class="row">
-
-{% for store in stores %}
-
-  <div class="col-sm-4">
-    <div class="card" style="width: 18rem;">
-      <img class="card-img-top" src="{{ store.mini_avatar.url }}" alt="Card image cap">
-      <div class="card-body">
-        <h5 class="card-title">{{ store.name }}</h5>
-        <p class="card-text">{{ store.desc }}</p>
-        <a href="{% url 'products:product_category' slug=store.slug %}" class="btn btn-primary">Посмотреть каталог</a>
-      </div>
+  <div class="col-2">
+    <div class="alert alert-success" role="alert">
+      <h4 class="alert-heading">Хотите стать курьером?</h4>
+      <p>Заполните форму и получите шанс вступить в наши ряды!</p>
+      <a href="{% url 'products:delivery-form' %}" class="btn btn-primary">Заполнить форму</a>
     </div>
   </div>
-
-{% endfor %}
-
+  {% for store in stores %}
+    <div class="col-sm-4">
+      <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="{{ store.mini_avatar.url }}" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title">{{ store.name }}</h5>
+          <p class="card-text">{{ store.desc }}</p>
+          <a href="{% url 'products:product_category' slug=store.slug %}" class="btn btn-primary">Посмотреть каталог</a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
 </div>
 
 {% endblock %}

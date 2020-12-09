@@ -14,3 +14,12 @@ class OrderForm(forms.Form):
     #         if field == '':
     #             valid = False
     #     return valid
+
+
+class DeliveryForm(forms.Form):
+    name = forms.CharField(max_length=255, required=True)
+    phone = forms.CharField(max_length=255, required=True)
+    reason = forms.CharField(widget=forms.Textarea(attrs={
+        'rows': 8
+    }), required=True)
+

@@ -1,9 +1,9 @@
 from django.urls import path
 from .views import (StoreList, ProductCategory, ProductDetail, StoreProduct
-, OrderSummaryView, add_to_cart, remove_from_cart, remove_single_item_from_cart
-, OrderFormView, OrderedList, OrderCustomerList, take_order, DeliveryRunningOrderList
-, remove_order, SearchProductsView, DeliveryFormView, DeliveryAppList, accept_app
-, refuse_app, confirm_execution)
+, OrderSummaryView, OrderFormView, OrderedList, OrderCustomerList, DeliveryRunningOrderList
+, SearchProductsView, DeliveryFormView, DeliveryAppList)
+from .actions import (add_to_cart, remove_from_cart, remove_single_item_from_cart, take_order
+, remove_order, accept_app, refuse_app, confirm_execution)
 
 app_name = 'products'
 

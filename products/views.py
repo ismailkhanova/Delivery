@@ -192,7 +192,10 @@ class OrderedList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     context_object_name = 'ordered_list'
 
     def get_queryset(self):
-        return Order.objects.filter(ordered=True, deliveryman=None)
+        if Deliveryman.objects.filter(user=self.request.user).exists():
+            return Order.objects.filter(ordered=True, deliveryman=None).exclude(user=self.request.user)
+        else:
+            return Order.objects.filter(ordered=True, deliveryman=None)
 
 
 class OrderCustomerList(LoginRequiredMixin, ListView):
@@ -209,15 +212,19 @@ def take_order(request, pk):
     order_pk = get_object_or_404(Order, pk=pk)
     if request.user.has_perm('products.take_orders') and Deliveryman.objects.filter(user=request.user).exists():
         order = Order.objects.get(pk=order_pk.pk)
-        if order.deliveryman is None:
-            deliveryman = Deliveryman.objects.get(user=request.user)
-            order.deliveryman = deliveryman
-            order.status = "В ожидании"
-            order.save()
-            messages.info(request, "Вы взяли заказ.")
-            return redirect("products:orders_taken")
+        if not order.user == request.user:
+            if order.deliveryman is None:
+                deliveryman = Deliveryman.objects.get(user=request.user)
+                order.deliveryman = deliveryman
+                order.status = "В ожидании"
+                order.save()
+                messages.info(request, "Вы взяли заказ.")
+                return redirect("products:orders_taken")
+            else:
+                messages.info(request, "Вы не можете взять этот заказ.")
+                return redirect("products:ordered")
         else:
-            messages.info(request, "Вы не можете взять этот заказ.")
+            messages.info(request, "Вы не можете взять свой заказ.")
             return redirect("products:ordered")
     else:
         messages.info(request, "У вас недостаточно прав для этого.")
@@ -248,6 +255,32 @@ class DeliveryRunningOrderList(LoginRequiredMixin, PermissionRequiredMixin, List
     def get_queryset(self):
         deliveryman = Deliveryman.objects.get(user=self.request.user)
         return Order.objects.filter(deliveryman=deliveryman)
+
+
+@login_required
+def confirm_execution(request, pk):
+    order_pk = get_object_or_404(Order, pk=pk)
+    order = Order.objects.get(pk=order_pk.pk)
+    if order.user == request.user:
+        if order.deliveryman is not None and order.status != "Новый":
+            if order.status != "Выполнен":
+                if order.status == "В ожидании":
+                    order.status = "Выполнен"
+                    order.save()
+                    messages.info(request, "Вы успешно подтвердили, что заказ выполнен.")
+                    return redirect("products:order_owner_list")
+                else:
+                    messages.info(request, "Произошла ошибка, обратитесь в администрацию.")
+                    return redirect("products:order_owner_list")
+            else:
+                messages.info(request, "Этот заказ уже выполнен.")
+                return redirect("products:order_owner_list")
+        else:
+            messages.info(request, "У вашего заказа нет курьера.")
+            return redirect("products:order_owner_list")
+    else:
+        messages.info(request, "Это не ваш заказ.")
+        return redirect("products:order_owner_list")
 
 
 class SearchProductsView(ListView):

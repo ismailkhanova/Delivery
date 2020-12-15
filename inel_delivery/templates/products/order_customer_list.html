@@ -26,6 +26,9 @@
             <span>Всего:</span>
             <strong>{{ ordered.get_total }} сом</strong>
         </li>
+        {% if ordered.user == request.user %}
+          <a href="{% url 'products:confirm_execution' pk=ordered.pk %}" class="btn btn-primary">Подтвердить выполнение</a>
+        {% endif %}
       </ul>
     </div>
   {% endfor %}

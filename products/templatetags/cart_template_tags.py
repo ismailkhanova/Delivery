@@ -16,7 +16,10 @@ def cart_item_count(user):
 @register.filter
 def ordered_count(user):
     if user.is_authenticated:
-        qs = Order.objects.filter(ordered=True, deliveryman=None)
+        if Deliveryman.objects.filter(user=user.id).exists():
+            qs = Order.objects.filter(ordered=True, deliveryman=None).exclude(user=user.id)
+        else:
+            qs = Order.objects.filter(ordered=True, deliveryman=None)
         if qs.exists():
             return qs.count()
     return 0

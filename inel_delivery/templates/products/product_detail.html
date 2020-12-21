@@ -11,7 +11,7 @@
         <h5 class="card-title">{{ product.name }}</h5>
         <p class="card-text">{{ product.desc }}</p>
         <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Цена: {{ product.price }} сом</p>
-        <a href="{{ object.get_add_to_cart_url }}" class="btn btn-primary">Добавить в корзину</a>
+        <a href="{{ product.get_add_to_cart_url }}" class="btn btn-primary">Добавить в корзину</a>
       </div>
     </div>
   </div>

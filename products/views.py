@@ -1,24 +1,23 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse_lazy
-from django.views.generic import ListView, DetailView, View, FormView, UpdateView
-from .models import Store, Product, Category, OrderProduct, Order, Deliveryman, ApplicationForm
+from django.views.generic import ListView, DetailView, View, FormView
+from .models import Store, Product, Category, Order, Deliveryman, ApplicationForm
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from products.forms import OrderForm, DeliveryForm
-from django.contrib.auth.models import Group
 
 
+# страница с магазинами
 class StoreList(ListView):
     model = Store
     template_name = 'products/store_list.html'
     context_object_name = 'stores'
 
 
+# категории в магазинах
 class ProductCategory(ListView):
     model = Category
     template_name = 'products/product_list.html'
@@ -34,6 +33,7 @@ class ProductCategory(ListView):
         return context
 
 
+# продукты в магазине
 class StoreProduct(ListView):
     model = Product
     template_name = 'products/cat_product_list.html'
@@ -49,11 +49,13 @@ class StoreProduct(ListView):
         return context
 
 
+# детали продукта
 class ProductDetail(DetailView):
     model = Product
     context_object_name = "product"
 
 
+# корзина
 class OrderSummaryView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
@@ -67,76 +69,7 @@ class OrderSummaryView(LoginRequiredMixin, View):
             return redirect("/")
 
 
-@login_required
-def add_to_cart(request, slug):
-    product = get_object_or_404(Product, slug=slug)
-    order_product, created = OrderProduct.objects.get_or_create(user=request.user, product=product, ordered=False)
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        # если продукт уже есть в заказе
-        if order.products.filter(product__slug=product.slug).exists():
-            order_product.amount += 1
-            order_product.save()
-            messages.info(request, "Количество продукта в вашей корзине обновлено.")
-            return redirect("products:order-summary")
-        else:
-            order.products.add(order_product)
-            messages.info(request, "Продукт был добавлен в вашу корзину.")
-            return redirect("products:order-summary")
-    else:
-        order = Order.objects.create(user=request.user, created_date=timezone.now())
-        order.products.add(order_product)
-        messages.info(request, "Продукт был добавлен в вашу корзину.")
-        return redirect("products:order-summary")
-
-
-@login_required
-def remove_from_cart(request, slug):
-    product = get_object_or_404(Product, slug=slug)
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        # если продукт есть в заказе
-        if order.products.filter(product__slug=product.slug).exists():
-            order_product = OrderProduct.objects.filter(user=request.user, product=product, ordered=False)[0]
-            order.products.remove(order_product)
-            order_product.delete()
-            messages.info(request, "Продукт был удалён с вашей корзины.")
-            return redirect("products:order-summary")
-        else:
-            messages.info(request, "Этого продукта нет в вашей корзине.")
-            return redirect("products:product", slug=slug)
-    else:
-        messages.info(request, "У вас нет активного заказа.")
-        return redirect("products:product", slug=slug)
-
-
-@login_required
-def remove_single_item_from_cart(request, slug):
-    product = get_object_or_404(Product, slug=slug)
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        # если продукт есть в заказе
-        if order.products.filter(product__slug=product.slug).exists():
-            order_product = OrderProduct.objects.filter(user=request.user, product=product, ordered=False)[0]
-            if order_product.amount > 1:
-                order_product.amount -= 1
-                order_product.save()
-            else:
-                order.products.remove(order_product)
-                order_product.delete()
-            messages.info(request, "Количество продукта в вашей корзине обновлено.")
-            return redirect("products:order-summary")
-        else:
-            messages.info(request, "Этого продукта нет в вашей корзине.")
-            return redirect("products:product", slug=slug)
-    else:
-        messages.info(request, "У вас нет активного заказа.")
-        return redirect("products:product", slug=slug)
-
-
+# страница с формой для оформления заказа
 class OrderFormView(LoginRequiredMixin, FormView):
     template_name = 'products/order.html'
     form_class = OrderForm
@@ -185,6 +118,7 @@ class OrderFormView(LoginRequiredMixin, FormView):
             return redirect("products:order-summary")
 
 
+# страница с уже оформленными заказами (для курьеров)
 class OrderedList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Order
     permission_required = 'products.view_orders_page'
@@ -192,9 +126,13 @@ class OrderedList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     context_object_name = 'ordered_list'
 
     def get_queryset(self):
-        return Order.objects.filter(ordered=True, deliveryman=None)
+        if Deliveryman.objects.filter(user=self.request.user).exists():
+            return Order.objects.filter(ordered=True, deliveryman=None).exclude(user=self.request.user)
+        else:
+            return Order.objects.filter(ordered=True, deliveryman=None)
 
 
+# страница с уже оформленными заказами (для заказчиков)
 class OrderCustomerList(LoginRequiredMixin, ListView):
     model = Order
     template_name = 'products/order_customer_list.html'
@@ -204,41 +142,7 @@ class OrderCustomerList(LoginRequiredMixin, ListView):
         return Order.objects.filter(user=self.request.user)
 
 
-@login_required
-def take_order(request, pk):
-    order_pk = get_object_or_404(Order, pk=pk)
-    if request.user.has_perm('products.take_orders') and Deliveryman.objects.filter(user=request.user).exists():
-        order = Order.objects.get(pk=order_pk.pk)
-        if order.deliveryman is None:
-            deliveryman = Deliveryman.objects.get(user=request.user)
-            order.deliveryman = deliveryman
-            order.status = "В ожидании"
-            order.save()
-            messages.info(request, "Вы взяли заказ.")
-            return redirect("products:orders_taken")
-        else:
-            messages.info(request, "Вы не можете взять этот заказ.")
-            return redirect("products:ordered")
-    else:
-        messages.info(request, "У вас недостаточно прав для этого.")
-        return redirect("products:ordered")
-
-
-@login_required
-def remove_order(request, pk):
-    order_pk = get_object_or_404(Order, pk=pk)
-    if request.user.has_perm('products.take_orders') and Deliveryman.objects.filter(user=request.user).exists():
-        order = Order.objects.get(pk=order_pk.pk)
-        order.deliveryman = None
-        order.status = "Новый"
-        order.save()
-        messages.info(request, "Вы отказались от заказа.")
-        return redirect("products:orders_taken")
-    else:
-        messages.info(request, "У вас недостаточно прав для этого.")
-        return redirect("products:ordered")
-
-
+# страница с активными заказами (для курьеров)
 class DeliveryRunningOrderList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Order
     template_name = 'products/running_order_list.html'
@@ -250,6 +154,7 @@ class DeliveryRunningOrderList(LoginRequiredMixin, PermissionRequiredMixin, List
         return Order.objects.filter(deliveryman=deliveryman)
 
 
+# поиск
 class SearchProductsView(ListView):
     model = Product
     template_name = 'products/search_products.html'
@@ -263,6 +168,7 @@ class SearchProductsView(ListView):
         return search_products
 
 
+# страница с формой на становление курьером
 class DeliveryFormView(LoginRequiredMixin, FormView):
     template_name = 'products/delivery_form.html'
     form_class = DeliveryForm
@@ -309,6 +215,7 @@ class DeliveryFormView(LoginRequiredMixin, FormView):
             return redirect("products:store_list")
 
 
+# страница с запросами на становление курьером (для стаффа)
 class DeliveryAppList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = ApplicationForm
     permission_required = 'products.view_app_page'
@@ -317,49 +224,3 @@ class DeliveryAppList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
     def get_queryset(self):
         return ApplicationForm.objects.filter(status="В ожидании")
-
-
-@login_required
-def accept_app(request, pk):
-    app_pk = get_object_or_404(ApplicationForm, pk=pk)
-    if request.user.has_perm('accept_app'):
-        app = ApplicationForm.objects.get(pk=app_pk.pk)
-        if app.status == "В ожидании":
-            if not Deliveryman.objects.filter(user=app.user).exists():
-                app.status = "Принято"
-                app.save()
-                deliveryman = Deliveryman.objects.create(user=app.user)
-                deliveryman.name = app.name
-                deliveryman.phone = app.phone
-                deliveryman.save()
-                deliveryman_group = Group.objects.get(name='deliveryman')
-                deliveryman_group.user_set.add(app.user)
-                messages.info(request, "Вы приняли заявку.")
-                return redirect("products:app-list")
-            else:
-                messages.info(request, "Этот пользователь уже зарегестрирован в базе данных.")
-                return redirect("products:app-list")
-        else:
-            messages.info(request, "Эта заявка уже обработана.")
-            return redirect("products:app-list")
-    else:
-        messages.info(request, "У вас недостаточно прав для этого.")
-        return redirect("products:app-list")
-
-
-@login_required
-def refuse_app(request, pk):
-    app_pk = get_object_or_404(ApplicationForm, pk=pk)
-    if request.user.has_perm('accept_app'):
-        app = ApplicationForm.objects.get(pk=app_pk.pk)
-        if app.status == "В ожидании":
-            app.status = "Отказано"
-            app.save()
-            messages.info(request, "Вы отказали в заявке.")
-            return redirect("products:app-list")
-        else:
-            messages.info(request, "Эта заявка уже обработана.")
-            return redirect("products:app-list")
-    else:
-        messages.info(request, "У вас недостаточно прав для этого.")
-        return redirect("products:app-list")

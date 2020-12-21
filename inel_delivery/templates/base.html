@@ -3,101 +3,102 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>{% block title %}InEl Delivery{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="InEl team work">
     <meta name="author" content="InEl team">
 
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <![endif]-->
-
     <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
 
     {% block css %}
+
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
     <!-- Latest compiled and minified Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!--<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
 
     <!-- Your stuff: Third-party CSS libraries go here -->
+
+    <link href="{% static 'vendors/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/fontawesome/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/themify-icons/themify-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/nice-select/nice-select.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/owl-carousel/owl.theme.default.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/owl-carousel/owl.carousel.min.css' %}" rel="stylesheet">
 
     <!-- This file stores project-specific CSS -->
 
     <link href="{% static 'css/project.css' %}" rel="stylesheet">
-
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
     {% endblock %}
 
   </head>
-
   <body>
+    <header class="header_area">
+      <div class="main_menu">
+        <nav class="navbar navbar-expand-lg navbar-light">
+          <div class="container">
+            <a class="navbar-brand logo_h" href="{% url 'products:store_list' %}">INEL Delivery</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+              <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
 
-    <div class="mb-1">
-      <nav class="navbar navbar-expand-md navbar-light bg-light">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <a class="navbar-brand" href="{% url 'products:store_list' %}">InEl Delivery</a>
+                <li class="nav-item"><a class="nav-link" href="{% url 'products:store_list' %}">Главная</a></li>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-          {% if request.user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'products:order-summary' %}">Корзина
-              <span class="badge red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'products:order_owner_list' %}">Мои заказы
-              <span class="badge red z-depth-1 mr-1"> {{ request.user|my_order_count }} </span></a>
-            </li>
-            {% if perms.products.view_orders_page %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'products:ordered' %}">Новые заказы
-                <span class="badge red z-depth-1 mr-1"> {{ request.user|ordered_count }} </span></a>
-              </li>
-               <li class="nav-item">
-                <a class="nav-link" href="{% url 'products:orders_taken' %}">Активные заказы
-                <span class="badge red z-depth-1 mr-1"> {{ request.user|orders_taken_count }} </span></a>
-              </li>
-            {% endif %}
-            {% if perms.products.view_app_page %}
-               <li class="nav-item">
-                <a class="nav-link" href="{% url 'products:app-list' %}">Заявки
-                <span class="badge red z-depth-1 mr-1"> {{ request.user|delivery_app_count }} </span></a>
-              </li>
-            {% endif %}
-{#              <li class="nav-item">#}
-                {# URL provided by django-allauth/account/urls.py #}
-{#                <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">Мой профиль</a>#}
-{#              </li>#}
-              <li class="nav-item">
-                {# URL provided by django-allauth/account/urls.py #}
-                <a class="nav-link" href="{% url 'account_logout' %}">Выйти</a>
-              </li>
-            {% else %}
-              <li class="nav-item">
-                {# URL provided by django-allauth/account/urls.py #}
-                <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">Зарегистироваться</a>
-              </li>
-              <li class="nav-item">
-                {# URL provided by django-allauth/account/urls.py #}
-                <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">Войти</a>
-              </li>
-            {% endif %}
-          </ul>
-        </div>
-      <form action="{% url 'products:search_products' %}" method="get">
-          <input name="q" type="text" placeholder="Поиск продукта..." aria-label="Search" style="text-align: right; margin-right: 20px; width: 300px;">
-          <button href="{% url 'products:search_products' %}" class="btn btn-outline-white btn-md my-0 ml-sm-2" type="submit"><i class="fas fa-search"></i></button>
-      </form>
-      </nav>
+                {% if request.user.is_authenticated %}
 
-    </div>
+                <li class="nav-item"><a class="nav-link" href="{% url 'products:order_owner_list' %}">Мои заказы</a>
+                <span class="badge red z-depth-1 mr-1"> {{ request.user|my_order_count }} </span></li>
 
-    <div class="container-fluid">
+                <li class="nav-item"><a class="nav-link" href="{% url 'products:order-summary' %}">Корзина</a>
+                <span class="badge red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span></li>
+
+                {% if perms.products.view_orders_page %}
+
+                <li class="nav-item"><a class="nav-link" href="{% url 'products:ordered' %}">Новые заказы</a>
+                <span class="badge red z-depth-1 mr-1"> {{ request.user|ordered_count }} </span></li>
+
+                <li class="nav-item"><a class="nav-link" href="{% url 'products:orders_taken' %}">Активные заказы</a>
+                <span class="badge red z-depth-1 mr-1"> {{ request.user|orders_taken_count }} </span></li>
+
+                {% endif %}
+
+                {% if perms.products.view_app_page %}
+
+                <li class="nav-item"><a class="nav-link" href="{% url 'products:app-list' %}">Заявки</a>
+                <span class="badge red z-depth-1 mr-1"> {{ request.user|delivery_app_count }} </span></li>
+
+                {% endif %}
+
+                <li class="nav-item submenu dropdown">
+                  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Профиль</a>
+                  <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'users:detail' request.user.username  %}">Мой профиль</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}">Выйти</a></li>
+                  </ul>
+                </li>
+
+                {% else %}
+
+                <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}">Войти</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'account_signup' %}">Зарегистироваться</a></li>
+
+                {% endif %}
+
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!--================ End Header Menu Area =================-->
+
+    <main class="site-main">
 
       {% if messages %}
           {% for message in messages %}
@@ -109,29 +110,121 @@
         <p>Use this document as a way to quick start any new project.</p>
       {% endblock content %}
 
-    </div> <!-- /container -->
+    </main>
 
-    {% block modal %}{% endblock modal %}
+      {% block modal %}{% endblock modal %}
 
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
+    <!--================ Start footer Area  =================-->
+{#    <footer class="footer">#}
+{##}
+{#      <div class="footer-bottom">#}
+{#        <div class="container">#}
+{#          <div class="row d-flex">#}
+{#            <p class="col-lg-12 footer-text text-center">#}
+{#              Сделано с любовью ♡＼(￣▽￣)／♡#}
+{#            </p>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    </footer>#}
+    <!--================ End footer Area  =================-->
+
+    <!--================ Le javascript  =================-->
+
     {% block javascript %}
 
       <!-- Bootstrap JS and its dependencies-->
-      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+{#      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>#}
+{#      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>#}
+{#      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>#}
 
       <!-- Your stuff: Third-party javascript libraries go here -->
 
+      <script src="{% static 'vendors/jquery/jquery-3.2.1.min.js' %}"></script>
+      <script src="{% static 'vendors/bootstrap/bootstrap.bundle.min.js' %}"></script>
+      <script src="{% static 'vendors/skrollr.min.js' %}"></script>
+      <script src="{% static 'vendors/owl-carousel/owl.carousel.min.js' %}"></script>
+      <script src="{% static 'vendors/nice-select/jquery.nice-select.min.js' %}"></script>
+      <script src="{% static 'vendors/jquery.ajaxchimp.min.js' %}"></script>
+      <script src="{% static 'vendors/mail-script.js' %}"></script>
 
       <!-- place project specific Javascript in this file -->
 
       <script src="{% static 'js/project.js' %}"></script>
-
+      <script src="{% static 'js/main.js' %}"></script>
 
     {% endblock javascript %}
+
   </body>
 </html>
+
+
+{#  <body>#}
+{##}
+{#    <div class="mb-1">#}
+{#      <nav class="navbar navbar-expand-md navbar-light bg-light">#}
+{#        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">#}
+{#          <span class="navbar-toggler-icon"></span>#}
+{#        </button>#}
+{#        <a class="navbar-brand" href="{% url 'products:store_list' %}">InEl Delivery</a>#}
+{##}
+{#        <div class="collapse navbar-collapse" id="navbarSupportedContent">#}
+{#          <ul class="navbar-nav mr-auto">#}
+{##}
+{##}
+{#          {% if request.user.is_authenticated %}#}
+{#            <li class="nav-item">#}
+{#              <a class="nav-link" href="{% url 'products:order-summary' %}">Корзина#}
+{#              <span class="badge red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span></a>#}
+{#            </li>#}
+{#            <li class="nav-item">#}
+{#              <a class="nav-link" href="{% url 'products:order_owner_list' %}">Мои заказы#}
+{#              <span class="badge red z-depth-1 mr-1"> {{ request.user|my_order_count }} </span></a>#}
+{#            </li>#}
+{#            {% if perms.products.view_orders_page %}#}
+{#              <li class="nav-item">#}
+{#                <a class="nav-link" href="{% url 'products:ordered' %}">Новые заказы#}
+{#                <span class="badge red z-depth-1 mr-1"> {{ request.user|ordered_count }} </span></a>#}
+{#              </li>#}
+{#               <li class="nav-item">#}
+{#                <a class="nav-link" href="{% url 'products:orders_taken' %}">Активные заказы#}
+{#                <span class="badge red z-depth-1 mr-1"> {{ request.user|orders_taken_count }} </span></a>#}
+{#              </li>#}
+{#            {% endif %}#}
+{#            {% if perms.products.view_app_page %}#}
+{#               <li class="nav-item">#}
+{#                <a class="nav-link" href="{% url 'products:app-list' %}">Заявки#}
+{#                <span class="badge red z-depth-1 mr-1"> {{ request.user|delivery_app_count }} </span></a>#}
+{#              </li>#}
+{#            {% endif %}#}
+{#              <li class="nav-item">#}
+{#                 URL provided by django-allauth/account/urls.py#}
+{#                <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">Мой профиль</a>#}
+{#              </li>#}
+{#              <li class="nav-item">#}
+{#                 URL provided by django-allauth/account/urls.py#}
+{#                <a class="nav-link" href="{% url 'account_logout' %}">Выйти</a>#}
+{#              </li>#}
+{#            {% else %}#}
+{#              <li class="nav-item">#}
+{#                 URL provided by django-allauth/account/urls.py#}
+{#                <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">Зарегистироваться</a>#}
+{#              </li>#}
+{#              <li class="nav-item">#}
+{#                 URL provided by django-allauth/account/urls.py#}
+{#                <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">Войти</a>#}
+{#              </li>#}
+{#            {% endif %}#}
+{##}
+{##}
+{#          </ul>#}
+{#        </div>#}
+{#      <form action="{% url 'products:search_products' %}" method="get">#}
+{#          <input name="q" type="text" placeholder="Поиск продукта..." aria-label="Search" style="text-align: right; margin-right: 20px; width: 300px;">#}
+{#          <button href="{% url 'products:search_products' %}" class="btn btn-outline-white btn-md my-0 ml-sm-2" type="submit"><i class="fas fa-search"></i></button>#}
+{#      </form>#}
+{#      </nav>#}
+{#    </div>#}
+{#  </body>#}
+
 

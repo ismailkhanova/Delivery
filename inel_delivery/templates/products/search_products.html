@@ -1,21 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
 
-  <div class="row">
-  {% for product in search_products %}
- <div class="col-sm-4">
-    <div class="card" style="width: 18rem;">
-      <img class="card-img-top" src="{{ product.mini_picture.url }}" alt="Card image cap">
-      <div class="card-body">
-        <h5 class="card-title">{{ product.name }}</h5>
-        <p class="card-text">{{ product.desc }}</p>
-        <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Цена: {{ product.price }} сом</p>
-        <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Магазин: {{ product.store }}</p>
-        <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary">Посмотреть товар</a>
-      </div>
-    </div>
+<div class="row">
+   {% for product in search_products %}
+  <div class="card text-center card-product" style="width: 15rem; margin-right: 10px;">
+  <div class="card-product__img">
+   <img class="card-img" src="{{ product.mini_picture.url  }}" alt="">
+    <ul class="card-product__imgOverlay">
+      <li><button> <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary"><i class="ti-search"></i></a></button></li>
+      <li><button> <a href="{{ product.get_add_to_cart_url }}" class="btn btn-primary"><i class="ti-shopping-cart"></i></a></button></li>
+    </ul>
+  </div>
+  <div class="card-body">
+    <h4 class="card-product__title"><a href="{% url 'products:product_detail' pk=product.pk %}"> {{product.name}}</a></h4>
+   <p class="card-product__price">Магазин: {{ product.store }}</p>
+    <p class="card-product__price">{{ product.price }} сом</p>
+
+
   </div>
   {% endfor %}
-  </div>
+</div>
+</div>
+
 
 {% endblock %}

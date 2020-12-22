@@ -94,7 +94,7 @@ class Product(models.Model):
     updated = models.DateTimeField(auto_now=True)
     picture = models.ImageField(upload_to="products_pic/", verbose_name="Картинка", blank=True,
                                 default="products_pic/no-image.jpg")
-    mini_picture = ImageSpecField(source="picture", processors=[ResizeToFill(800, 600)],
+    mini_picture = ImageSpecField(source="picture", processors=[ResizeToFill(600, 600)],
                                  format="JPEG", options={"quality": 100})
 
     def get_add_to_cart_url(self):

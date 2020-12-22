@@ -3,47 +3,44 @@
 
 {% block content %}
 
-<!--================Order Details Area =================-->
-
+      <!--================Order Details Area =================-->
   <section class="order_details section-margin--small">
     <div class="container">
-      <div class="filter-bar d-flex flex-wrap align-items-center">
-        <div>
-          <form action="{% url 'products:search_products' %}" method="get">
-            <div class="input-group filter-bar-search">
-              <input name="q" type="text" placeholder="Поиск" aria-label="Search">
-              <div class="input-group-append">
-                <button href="{% url 'products:search_products' %}" type="submit"><i class="ti-search"></i></button>
-              </div>
-            </div>
-          </form>
+      <div class="container">
+        <div class="section-intro pb-60px">
+          <h2><span class="section-intro__style">Ваши активные заказы</span></h2>
         </div>
       </div>
       <div class="row mb-5">
         {% for ordered in take_order_list %}
-        <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
-          <div class="confirmation-card">
-            <h3 class="billing-title">Заказ № {{ ordered.id }}</h3>
-            <table class="order-rable">
-              <tr>
-                <td>Имя</td>
-                <td>: {{ ordered.name }}</td>
-              </tr>
-              <tr>
-                <td>Дата</td>
-                <td>: {{ ordered.created_date }}</td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td><b>: {{ ordered.status }}</b></td>
-              </tr>
-            </table>
-            <div class="blog_details">
-            <a class="button button-blog" href="{% url 'products:order_detail' pk=ordered.pk %}">Посмотреть</a>
+          <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
+            <div class="confirmation-card">
+              <h3 class="billing-title">Заказ № {{ ordered.id }}</h3>
+              <table class="order-rable">
+                <tr>
+                  <td>Имя</td>
+                  <td>{{ ordered.name }}</td>
+                </tr>
+                <tr>
+                  <td>Дата</td>
+                  <td>{{ ordered.created_date }}</td>
+                </tr>
+                <tr>
+                  <td>Статус</td>
+                  <td><b>{{ ordered.status }}</b></td>
+                </tr>
+              </table>
+              {% if perms.products.take_orders %}
+              <div style="border-top: solid 1px #818182; margin-top: 15px; text-align: center" class="blog_details">
+                <a class="button button-blog" href="{% url 'products:remove-order' pk=ordered.pk %}">Отказаться от заказа</a>
+              </div>
+              {% endif %}
+              <div style="border-top: solid 1px #818182; margin-top: 15px; text-align: center" class="blog_details">
+                <a class="button button-blog" href="{% url 'products:order_detail' pk=ordered.pk %}">Посмотреть</a>
+              </div>
             </div>
           </div>
-        </div>
-         {% endfor %}
+        {% endfor %}
       </div>
     </div>
   </section>

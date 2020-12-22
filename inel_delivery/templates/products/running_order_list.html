@@ -3,32 +3,50 @@
 
 {% block content %}
 
-  {% for ordered in take_order_list %}
-    <div class="card-body">
-      <ul class="list-group mb-3 z-depth-1">
-        <li class="list-group-item d-flex justify-content-between lh-condensed">
-          <span class="text-muted">Информация:</span>
-          <span>{{ ordered.name }}</span>|<span>{{ ordered.phone }}</span>|
-          <span>{{ ordered.address }}</span>|<span>{{ ordered.created_date }}</span>|
-          <strong><span>{{ ordered.status }}</span></strong>
-        </li>
-        {% for order_product in ordered.products.all %}
-        <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">{{ order_product.amount }} x {{ order_product.product.name }}</h6>
-              <small class="text-muted">{{ order_product.product.desc }}</small>
-            </div>
-            <span class="text-muted">{{ order_product.get_final_price }} сом</span>
-        </li>
-        {% endfor %}
+<!--================Order Details Area =================-->
 
-        <li class="list-group-item d-flex justify-content-between">
-            <span>Всего:</span>
-            <strong>{{ ordered.get_total }} сом</strong>
-        </li>
-        <a href="{% url 'products:remove-order' pk=ordered.pk %}" class="btn btn-primary">Отказаться от заказа</a>
-      </ul>
+  <section class="order_details section-margin--small">
+    <div class="container">
+      <div class="filter-bar d-flex flex-wrap align-items-center">
+        <div>
+          <form action="{% url 'products:search_products' %}" method="get">
+            <div class="input-group filter-bar-search">
+              <input name="q" type="text" placeholder="Поиск" aria-label="Search">
+              <div class="input-group-append">
+                <button href="{% url 'products:search_products' %}" type="submit"><i class="ti-search"></i></button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row mb-5">
+        {% for ordered in take_order_list %}
+        <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
+          <div class="confirmation-card">
+            <h3 class="billing-title">Заказ № {{ ordered.id }}</h3>
+            <table class="order-rable">
+              <tr>
+                <td>Имя</td>
+                <td>: {{ ordered.name }}</td>
+              </tr>
+              <tr>
+                <td>Дата</td>
+                <td>: {{ ordered.created_date }}</td>
+              </tr>
+              <tr>
+                <td>Статус</td>
+                <td><b>: {{ ordered.status }}</b></td>
+              </tr>
+            </table>
+            <div class="blog_details">
+            <a class="button button-blog" href="{% url 'products:order_detail' pk=ordered.pk %}">Посмотреть</a>
+            </div>
+          </div>
+        </div>
+         {% endfor %}
+      </div>
     </div>
-  {% endfor %}
+  </section>
+  <!--================End Order Details Area =================-->
 
 {% endblock %}

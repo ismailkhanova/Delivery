@@ -3,37 +3,45 @@
 
 {% block content %}
 
-<div class="container wow fadeIn">
-  <h2 class="my-5 h2 text-center">Оформление заказа</h2>
-  <div class="row">
-
-    <div class="col-md-8 mb-4">
-      <form method="POST" enctype="multipart/form-data">{% csrf_token %}
-
-        <div class="form-group">
-          <label for="name">И.Ф.О.* </label>
-          <input class="form-control" id="name" type="text" name="name" maxlength="255" required>
+  <!--================Checkout Area =================-->
+  <section class="checkout_area section-margin--small">
+    <div class="container">
+        <div class="billing_details">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h3>Оформление заказа</h3>
+                    <form class="row contact_form" method="POST" novalidate="novalidate">{% csrf_token %}
+                        <div class="col-md-6 form-group p_star">
+                            <input class="form-control" id="name" type="text" name="name" maxlength="255" placeholder="Ф.И.О." required>
+                        </div>
+                        <div class="col-md-6 form-group p_star">
+                            <input class="form-control" id="phone" type="text" name="phone" maxlength="255" placeholder="Телефон" required>
+                        </div>
+                        <div class="col-md-12 form-group mb-0">
+                            <textarea class="form-control"  id="address" name="address" rows="8" maxlength="65535" placeholder="Адрес" required></textarea>
+                        </div>
+                        <div style="margin-top: 20px; margin-bottom: 20px;" class="col-md-12 form-group mb-0">
+                            <button type="submit" class="button button-login">Оформить заказ</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-4">
+                    <div class="order_box">
+                        <h2>Ваш заказ <span class="badge bg-light text-dark">{{ order.products.count }}</span></h2>
+                        <ul class="list">
+                            <li><a href="#"><h4>Продукт <span>Всего</span></h4></a></li>
+                          {% for order_product in order.products.all %}
+                            <li><a href="#">{{ order_product.product.name }} <span class="middle">x {{ order_product.amount }}</span><span class="last">{{ order_product.get_final_price }} сом</span></a></li>
+                          {% endfor %}
+                        </ul>
+                        <ul class="list list_2">
+                            <li><a href="#">Итого к оплате <span>{{ order.get_total }} сом</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="form-group">
-          <label for="phone">Телефон* </label>
-          <input class="form-control" id="phone" type="text" name="phone" maxlength="255" required>
-        </div>
-
-        <div class="form-group">
-          <label for="address">Адрес* </label>
-          <textarea class="form-control" id="address" name="address" rows="8" maxlength="65535" required></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary mb-2">Отправить</button>
-      </form>
     </div>
-
-    <div class="col-md-4 mb-4">
-      {% include "products/order_card.html" %}
-    </div>
-
-  </div>
-</div>
+  </section>
 
 {% endblock %}

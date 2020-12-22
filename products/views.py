@@ -132,6 +132,12 @@ class OrderedList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             return Order.objects.filter(ordered=True, deliveryman=None)
 
 
+# детали заказа
+class OrderDetail(DetailView):
+    model = Order
+    context_object_name = "order"
+
+
 # страница с уже оформленными заказами (для заказчиков)
 class OrderCustomerList(LoginRequiredMixin, ListView):
     model = Order
@@ -139,7 +145,7 @@ class OrderCustomerList(LoginRequiredMixin, ListView):
     context_object_name = 'ordered_list'
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
+        return Order.objects.filter(user=self.request.user, ordered=True)
 
 
 # страница с активными заказами (для курьеров)

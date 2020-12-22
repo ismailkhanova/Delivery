@@ -1,0 +1,115 @@
+
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  <!--================Order Details Area =================-->
+  <section class="order_details section-margin--small">
+    <div class="container">
+      <div class="row mb-5">
+        <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
+          <div class="confirmation-card">
+            <h3 class="billing-title">Заказ</h3>
+            <table class="order-rable">
+              <tr>
+                <td>№</td>
+                <td>: {{ order.id }}</td>
+              </tr>
+              <tr>
+                <td>Дата</td>
+                <td>: {{ order.created_date }}</td>
+              </tr>
+              <tr>
+                <td>Статус</td>
+                <td><b>: {{ order.status }}</b></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
+          <div class="confirmation-card">
+            <h3 class="billing-title">Заказчик</h3>
+            <table class="order-rable">
+              <tr>
+                <td>Имя</td>
+                <td>: {{ order.name }}</td>
+              </tr>
+              <tr>
+                <td>Телефон</td>
+                <td>: {{ order.phone }}</td>
+              </tr>
+              <tr>
+                <td>Адрес</td>
+                <td>: {{ order.address }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
+          <div class="confirmation-card">
+            <h3 class="billing-title">Курьер</h3>
+            <table class="order-rable">
+              <tr>
+                <td>Имя</td>
+                <td>: {{ order.deliveryman.name }}</td>
+              </tr>
+              <tr>
+                <td>Телефон</td>
+                <td>: {{ order.deliveryman.phone }}</td>
+              </tr>
+              <tr>
+                <td>=_=</td>
+                <td> </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="order_details_table">
+        <h2>Продукты</h2>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Продукт</th>
+                <th scope="col">Количество</th>
+                <th scope="col">Всего</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for order_product in order.products.all %}
+              <tr>
+                <td>
+                  <p>{{ order_product.product.name }}</p>
+                </td>
+                <td>
+                  <h5>x {{ order_product.amount }}</h5>
+                </td>
+                <td>
+                  <p>{{ order_product.get_final_price }} сом</p>
+                </td>
+              </tr>
+            {% endfor %}
+              <tr>
+                <td>
+                  <h4>Итого к оплате</h4>
+                </td>
+                <td>
+                  <h5></h5>
+                </td>
+                <td>
+                  <h4>{{ order.get_total }} сом</h4>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% if ordered.user == request.user %}
+          <a href="{% url 'products:confirm_execution' pk=ordered.pk %}" class="btn btn-primary">Подтвердить выполнение</a>
+        {% endif %}
+
+{% endblock %}

@@ -2,30 +2,45 @@
 
 {% block content %}
 
+
+      <div class="container" style="margin-top: 20px; margin-left: 40px;">
+        <div class="section-intro pb-60px">
+          <h2><span class="section-intro__style">Каталог магазина</span></h2>
+        </div>
+      </div>
+
 <div class="row">
 
-<ul class="nav flex-column">
-  <li class="nav-item">
+  <ul class="nav flex-column" style="margin-left: 100px;">
+<div class="sidebar-categories">
+<div class="head">Категории</div>
+<ul class="main-categories">
     {% for category in categories %}
-    <a class="nav-link" href="{% url 'products:cat_products' slug=category.slug %}">{{ category.name }}</a>
+      <li class="filter-list"> <label for="men">
+      <a class="nav-link" href="{% url 'products:cat_products' slug=category.slug %}">{{ category.name }}</a></label>
+    </li>
     {% endfor %}
-  </li>
+</ul>
+</div>
 </ul>
 
-{% for product in products %}
 
-  <div class="col-sm-4">
-    <div class="card" style="width: 18rem;">
-      <img class="card-img-top" src="{{ product.mini_picture.url }}" alt="Card image cap">
-      <div class="card-body">
-        <h5 class="card-title">{{ product.name }}</h5>
-        <p class="card-text">{{ product.desc }}</p>
-        <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Цена: {{ product.price }} сом</p>
-        <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary">Посмотреть товар</a>
-        <a href="{{ product.get_add_to_cart_url }}" class="btn btn-primary">Добавить в корзину</a>
-      </div>
-    </div>
+{% for product in products %}
+ <div class="card text-center card-product" style="width: 15rem; margin-right: 10px;">
+  <div class="card-product__img">
+   <img class="card-img" src="{{ product.mini_picture.url  }}" alt="">
+    <ul class="card-product__imgOverlay">
+      <li><button> <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary"><i class="ti-search"></i></a></button></li>
+      <li><button> <a href="{{ product.get_add_to_cart_url }}" class="btn btn-primary"><i class="ti-shopping-cart"></i></a></button></li>
+    </ul>
   </div>
+  <div class="card-body">
+    <h4 class="card-product__title"><a href="{% url 'products:product_detail' pk=product.pk %}"> {{product.name}}</a></h4>
+  <p class="card-product__price">{{ product.price }} сом</p>
+
+  </div>
+</div>
+
 
 {% endfor %}
 

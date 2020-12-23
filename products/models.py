@@ -58,7 +58,7 @@ class Store(models.Model):
     desc = models.CharField(max_length=255, verbose_name="Описание")
     avatar = models.ImageField(upload_to="store_avatars/", verbose_name="Аватар", blank=True,
                                default="store_avatars/no-image.jpg")
-    mini_avatar = ImageSpecField(source="avatar", processors=[ResizeToFill(200, 100)],
+    mini_avatar = ImageSpecField(source="avatar", processors=[ResizeToFill(414, 189)],
                                  format="JPEG", options={"quality": 100})
 
     def __str__(self):

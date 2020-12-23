@@ -169,7 +169,7 @@ class SearchProductsView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q')
         search_products = Product.objects.filter(
-            Q(name__icontains=query) | Q(desc__icontains=query) | Q(price__icontains=query)
+            Q(name__icontains=query) | Q(price__icontains=query)
         )
         return search_products
 

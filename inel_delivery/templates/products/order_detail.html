@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
@@ -14,15 +13,15 @@
             <table class="order-rable">
               <tr>
                 <td>№</td>
-                <td>: {{ order.id }}</td>
+                <td>{{ order.id }}</td>
               </tr>
               <tr>
                 <td>Дата</td>
-                <td>: {{ order.created_date }}</td>
+                <td>{{ order.created_date }}</td>
               </tr>
               <tr>
                 <td>Статус</td>
-                <td><b>: {{ order.status }}</b></td>
+                <td><b>{{ order.status }}</b></td>
               </tr>
             </table>
           </div>
@@ -33,15 +32,15 @@
             <table class="order-rable">
               <tr>
                 <td>Имя</td>
-                <td>: {{ order.name }}</td>
+                <td>{{ order.name }}</td>
               </tr>
               <tr>
                 <td>Телефон</td>
-                <td>: {{ order.phone }}</td>
+                <td>{{ order.phone }}</td>
               </tr>
               <tr>
                 <td>Адрес</td>
-                <td>: {{ order.address }}</td>
+                <td>{{ order.address }}</td>
               </tr>
             </table>
           </div>
@@ -52,11 +51,11 @@
             <table class="order-rable">
               <tr>
                 <td>Имя</td>
-                <td>: {{ order.deliveryman.name }}</td>
+                <td>{{ order.deliveryman.name }}</td>
               </tr>
               <tr>
                 <td>Телефон</td>
-                <td>: {{ order.deliveryman.phone }}</td>
+                <td>{{ order.deliveryman.phone }}</td>
               </tr>
               <tr>
                 <td>=_=</td>
@@ -106,10 +105,21 @@
           </table>
         </div>
       </div>
+      {% if order.user == request.user %}
+        <div class="checkout_btn_inner d-flex align-items-center">
+          <a style="margin-top: 20px" class="gray_btn" href="{% url 'products:confirm_execution' pk=order.pk %}">Выполнено</a>
+        </div>
+      {% else %}
+        {% if perms.products.take_orders %}
+          <div class="checkout_btn_inner d-flex align-items-center">
+            <a style="margin-top: 20px" class="gray_btn" href="{% url 'products:take-order' pk=order.pk %}">Взять заказ</a>
+          </div>
+          <div class="checkout_btn_inner d-flex align-items-center">
+            <a style="margin-top: 20px" class="gray_btn" href="{% url 'products:remove-order' pk=order.pk %}">Отказаться от заказа</a>
+          </div>
+        {% endif %}
+      {% endif %}
     </div>
   </section>
-  {% if ordered.user == request.user %}
-          <a href="{% url 'products:confirm_execution' pk=ordered.pk %}" class="btn btn-primary">Подтвердить выполнение</a>
-        {% endif %}
 
 {% endblock %}

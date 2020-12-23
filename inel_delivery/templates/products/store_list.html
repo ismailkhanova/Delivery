@@ -2,26 +2,58 @@
 
 {% block content %}
 
-<div class="row">
-  <div class="col-2">
-    <div class="alert alert-success" role="alert">
-      <h4 class="alert-heading">Хотите стать курьером?</h4>
-      <p>Заполните форму и получите шанс вступить в наши ряды!</p>
-      <a href="{% url 'products:delivery-form' %}" class="btn btn-primary">Заполнить форму</a>
-    </div>
-  </div>
-  {% for store in stores %}
-    <div class="col-sm-4">
-      <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="{{ store.mini_avatar.url }}" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">{{ store.name }}</h5>
-          <p class="card-text">{{ store.desc }}</p>
-          <a href="{% url 'products:product_category' slug=store.slug %}" class="btn btn-primary">Посмотреть каталог</a>
+      <div style="float: right; margin-right: 10px;">
+          <form action="{% url 'products:search_products' %}" method="get">
+            <div class="input-group filter-bar-search">
+              <input name="q" type="text" placeholder="Поиск продукта" aria-label="Search">
+              <div class="input-group-append">
+                <button href="{% url 'products:search_products' %}" type="submit"><i class="ti-search"></i></button>
+              </div>
+            </div>
+          </form>
         </div>
-      </div>
-    </div>
-  {% endfor %}
+
+     <section class="section-margin calc-60px">
+      <div class="container" style="margin-top: -80px;">
+        <div class="section-intro pb-60px">
+          <h2><span class="section-intro__style">Магазины</span></h2>
+        </div>
+
+
+
+        <div class="row">
+			{% for store in stores %}
+         <div class="card" style="width: 15rem; margin-right: 20px;">
+      <img src="{{ store.mini_avatar.url }}" alt="..." style="margin-right: 20px;">
+       <div class="card-body">
+       <h4 class="card-product__title" style="text-align: center;">
+        <a href="{% url 'products:product_category' slug=store.slug %}" > <button type="button" class="btn btn-light" data-mdb-ripple-color="dark">{{ store.name }}</button></a>
+       </h4>
+  </div>
 </div>
 
+				{% endfor %}
+        </div>
+      </div>
+    </section>
+
+   <section class="subscribe-position">
+    <div class="container">
+      <div class="subscribe text-center">
+        <h3 class="subscribe__title">Хотите стать курьером?</h3>
+        <p>Заполните анкету и получите шанс вступить в наши ряды!</p>
+            <a href="{% url 'products:delivery-form' %}"> <button class="button button-subscribe mr-auto mb-1" type="submit">Заполнить анкету</button></a>
+            <div style="position: absolute; left: -5000px;">
+              <input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
 {% endblock %}
+
+

@@ -2,20 +2,30 @@
 
 {% block content %}
 
-<div class="row">
 
-  <div class="col-sm-4">
-    <div class="card" style="width: 18rem;">
-      <img class="card-img-top" src="{{ product.mini_picture.url }}" alt="Card image cap">
-      <div class="card-body">
-        <h5 class="card-title">{{ product.name }}</h5>
-        <p class="card-text">{{ product.desc }}</p>
-        <p style="text-align: right; margin-right: 10px; font-family: Roboto; font-size:1.2em;">Цена: {{ product.price }} сом</p>
-        <a href="{{ product.get_add_to_cart_url }}" class="btn btn-primary">Добавить в корзину</a>
-      </div>
-    </div>
-  </div>
-
-</div>
+		<div class="container">
+			<div class="row s_product_inner">
+				<div class="col-lg-6">
+					<div class="owl-carousel owl-theme s_Product_carousel">
+						<div class="single-prd-item">
+							<img class="img-fluid" src="{{ product.picture.url }}" alt="">
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-5 offset-lg-1">
+					<div class="s_product_text">
+						<h3>{{ product.name }}</h3>
+						<h2>{{ product.price }} coм</h2>
+						<ul class="list">
+							<li><a class="active" href="#"><span>Категория:</span>{{ product.category }}</a></li>
+						</ul>
+						<p>{{ product.desc }}</p>
+						<div class="product_count">
+							<a class="button primary-btn" href="{{ product.get_add_to_cart_url }}">Добавить в корзину</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 {% endblock %}

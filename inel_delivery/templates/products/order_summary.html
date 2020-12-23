@@ -2,66 +2,85 @@
 
 {% block content %}
 
-  <main>
-
-    <div class="container">
-      <div class="table-responsive text-nowrap">
-        <h2>Ваш заказ</h2>
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Название</th>
-              <th scope="col">Цена</th>
-              <th scope="col">Количество</th>
-              <th scope="col">Общая цена</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-          {% for order_product in object.products.all %}
-            <tr>
-              <th scope="row">{{ forloop.counter }}</th>
-              <td>{{ order_product.product.name }}</td>
-              <td>{{ order_product.product.price }} сом</td>
-              <td>
-                <a href="{% url 'products:remove-single-item-from-cart' order_product.product.slug %}">-</a>
-                {{ order_product.amount }}
-                <a href="{% url 'products:add-to-cart' order_product.product.slug %}">+</a>
-              </td>
-              <td>{{ order_product.get_total_item_price }} сом
-                <a style='color: red;' href="{% url 'products:remove-from-cart' order_product.product.slug %}"><i class="fas fa-trash-alt"></i></a>
-              </td>
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan='5'>Здесь пусто</td>
-            </tr>
-            <tr>
-              <td colspan="5">
-                <a class='btn btn-primary float-right' href='{% url 'products:store_list' %}'>На главную</a>
-            </td>
-            </tr>
-          {% endfor %}
-          {% if object.get_total %}
-            <tr>
-              <td colspan="4"><b>Всего:</b></td>
-              <td><b>{{ object.get_total }} сом</b></td>
-            </tr>
-            <tr>
-              <td colspan="5">
-                <a class='btn btn-warning float-right ml-2' href='{% url 'products:order' %}'>Оформить заказ</a>
-                <a class='btn btn-primary float-right' href='{% url 'products:store_list' %}'>На главную</a>
-              </td>
-            </tr>
-          {% endif %}
-
-          </tbody>
-        </table>
+ <!--================Cart Area =================-->
+  <section class="cart_area">
+      <div class="container">
+          <div class="cart_inner">
+              <div class="table-responsive">
+                  <table class="table">
+                      <thead>
+                          <tr>
+                              <th scope="col">Продукт</th>
+                              <th scope="col">Цена</th>
+                              <th scope="col">Количество</th>
+                              <th scope="col">Всего</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                      {% for order_product in object.products.all %}
+                          <tr>
+                              <td>
+                                  <div class="media">
+                                      <div class="d-flex">
+                                          <img src="{{ order_product.product.mini_picture.url }}" style="height: 100px">
+                                      </div>
+                                      <div class="media-body">
+                                          <p>{{ order_product.product.name }}</p>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td>
+                                  <h5 style='white-space: nowrap;'>{{ order_product.product.price }} сом</h5>
+                              </td>
+                              <td>
+                                  <h5>
+                                    <a style='color: #5e7aff;' href="{% url 'products:remove-single-item-from-cart' order_product.product.slug %}"><i class="fa fa-minus" aria-hidden="true"></i></a>
+                                    {{ order_product.amount }}
+                                    <a style='color: #5e7aff;' href="{% url 'products:add-to-cart' order_product.product.slug %}"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                                  </h5>
+                              </td>
+                              <td>
+                                  <div class="media">
+                                      <div class="d-flex">
+                                        <h5 style='white-space: nowrap;'>{{ order_product.get_total_item_price }} сом</h5>
+                                      </div>
+                                      <div class="media-body">
+                                   <a style='color: #ff6267;' href="{% url 'products:remove-from-cart' order_product.product.slug %}"><i class="fas fa-trash-alt"></i></a>
+                                  </div>
+                              </td>
+                          </tr>
+                      {% endfor %}
+                          <tr class="bottom_button">
+                              <td>
+                                  <h5>Всего:</h5>
+                              </td>
+                              <td>
+                              </td>
+                              <td>
+                              </td>
+                              <td>
+                                  <h5 style='white-space: nowrap;'>{{ object.get_total }} сом</h5>
+                              </td>
+                          </tr>
+                          <tr class="out_button_area">
+                              <td>
+                              </td>
+                              <td>
+                              </td>
+                              <td>
+                              </td>
+                              <td>
+                                  <div class="checkout_btn_inner d-flex align-items-center">
+                                      <a class="gray_btn" href="{% url 'products:store_list' %}">На главную</a>
+                                      <a class="primary-btn ml-2" href="{% url 'products:order' %}">Оформить заказ</a>
+                                  </div>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
       </div>
-    </div>
-
-  </main>
+  </section>
 
 {% endblock content %}

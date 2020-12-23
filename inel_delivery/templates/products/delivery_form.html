@@ -1,31 +1,27 @@
+
 {% extends "base.html" %}
 
 {% block content %}
 
-<div class="container wow fadeIn">
-  <h2 class="my-5 h2 text-center">Заявка на работу курьера</h2>
-  <div class="row">
+  <div class="container wow fadeIn">
+        <h2 style="margin-top: 50px; margin-bottom: 50px; "><span class="section-intro__style">Анкета на вакансию курьера</span></h2>
+    <div class="row">
 
-    <div class="col-md-8 mb-4">
-      <form method="POST" enctype="multipart/form-data">{% csrf_token %}
-
-        <div class="form-group">
-          <label for="name">И.Ф.О.* </label>
-          <input class="form-control" id="name" type="text" name="name" maxlength="255" required>
-        </div>
-
-        <div class="form-group">
-          <label for="phone">Телефон* </label>
-          <input class="form-control" id="phone" type="text" name="phone" maxlength="255" required>
-        </div>
-
-        <div class="form-group">
-          <label for="reason">Почему вы хотите присоедениться к нам?* </label>
-          <textarea class="form-control" id="reason" name="reason" rows="8" maxlength="65535" required></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary mb-2">Отправить</button>
-      </form>
+      <div class="col-md-8 mb-4">
+        <form class="row contact_form" method="POST" novalidate="novalidate">{% csrf_token %}
+          <div class="col-md-6 form-group p_star">
+            <input class="form-control" id="name" type="text" name="name" maxlength="255" placeholder="Ф.И.О." required>
+          </div>
+          <div class="col-md-6 form-group p_star">
+            <input class="form-control" id="phone" type="text" name="phone" maxlength="255" placeholder="Телефон" required>
+          </div>
+          <div class="col-md-12 form-group mb-0">
+            <textarea class="form-control"  id="reason" name="reason" rows="8" maxlength="65535" placeholder="Почему вы хотите присоедениться к нам?" required></textarea>
+          </div>
+          <div style="margin-top: 20px; margin-bottom: 20px;" class="col-md-12 form-group mb-0">
+            <button type="submit" class="button button-login">Отправить</button>
+          </div>
+        </form>
     </div>
 
   </div>

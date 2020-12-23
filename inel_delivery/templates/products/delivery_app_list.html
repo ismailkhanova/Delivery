@@ -20,11 +20,11 @@
         <li class="list-group-item d-flex justify-content-between lh-condensed">
           <strong><span>{{ app.status }}</span></strong>
         </li>
-        {% if perms.products.accept_app %}
-          <a href="{% url 'products:accept_app' pk=app.pk %}" class="btn btn-primary">Принять</a>
-          <a href="{% url 'products:refuse_app' pk=app.pk %}" class="btn btn-primary">Отказать</a>
-        {% endif %}
       </ul>
+        {% if perms.products.accept_app %}
+          <a href="{% url 'products:accept_app' pk=app.pk %}"><button type="button" class="btn btn-info">Принять</button></a>
+          <a href="{% url 'products:refuse_app' pk=app.pk %}"> <button type="button" class="btn btn-dark">Отказать</button></a>
+        {% endif %}
     </div>
   {% endfor %}
 

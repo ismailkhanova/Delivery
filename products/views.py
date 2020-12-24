@@ -156,8 +156,9 @@ class DeliveryRunningOrderList(LoginRequiredMixin, PermissionRequiredMixin, List
     context_object_name = 'take_order_list'
 
     def get_queryset(self):
-        deliveryman = Deliveryman.objects.get(user=self.request.user)
-        return Order.objects.filter(deliveryman=deliveryman)
+        if Deliveryman.objects.filter(user=self.request.user).exists():
+            deliveryman = Deliveryman.objects.get(user=self.request.user)
+            return Order.objects.filter(deliveryman=deliveryman)
 
 
 # поиск

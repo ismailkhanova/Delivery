@@ -20,9 +20,9 @@
           <h2><span class="section-intro__style">Магазины</span></h2>
         </div>
       </div>
-      <div class="row">
+      <div class="card-group">
         {% for store in stores %}
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-0" style="border: solid 1px #818182; margin-right: 10px">
+          <div class="card" style="border: solid 1px #818182; margin-right: 10px; margin-top: 10px">
             <div class="card card-blog">
                 <img class="card-img rounded-0" src="{{ store.mini_avatar.url }}">
                 <h4 style="text-align: center;" class="card-blog__title"><a href="{% url 'products:product_category' slug=store.slug %}">{{ store.name }}</a></h4>

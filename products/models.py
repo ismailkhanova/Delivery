@@ -176,18 +176,3 @@ class Order(models.Model):
         permissions = (("view_orders_page", "Can view the orders page"),
                        ("take_orders", "Can take orders"),)
 
-# picture = Deliveryman.objects.all()[0]
-# print(picture.mini_avatar.url)
-# print(picture.mini_avatar.width)
-
-# picture = Customer.objects.all()[0]
-# print(picture.mini_avatar.url)
-# print(picture.mini_avatar.width)
-
-# str = Store.objects.all()[0]
-# print(str.mini_avatar.url)
-# print(str.mini_avatar.width)
-#
-# picture = Product.objects.all()[0]
-# print(picture.mini_picture.url)
-# print(picture.mini_picture.width)

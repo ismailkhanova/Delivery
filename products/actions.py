@@ -167,7 +167,7 @@ def accept_app(request, pk):
        Меняет статус заявки на 'Принято'.
     """
     app_pk = get_object_or_404(ApplicationForm, pk=pk)
-    if request.user.has_perm('accept_app'):
+    if request.user.has_perm('products.accept_app'):
         app = ApplicationForm.objects.get(pk=app_pk.pk)
         if app.status == "В ожидании":
             if not Deliveryman.objects.filter(user=app.user).exists():
@@ -198,7 +198,7 @@ def refuse_app(request, pk):
        Отказывает в заявке, поменяв статус на 'Отказано'.
     """
     app_pk = get_object_or_404(ApplicationForm, pk=pk)
-    if request.user.has_perm('accept_app'):
+    if request.user.has_perm('products.accept_app'):
         app = ApplicationForm.objects.get(pk=app_pk.pk)
         if app.status == "В ожидании":
             app.status = "Отказано"

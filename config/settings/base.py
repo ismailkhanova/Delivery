@@ -1,6 +1,7 @@
 """
 Base settings to build other settings files upon.
 """
+import os
 from pathlib import Path
 
 import environ
@@ -65,6 +66,7 @@ DJANGO_APPS = [
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
+
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
@@ -72,6 +74,7 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "imagekit",
+    "robokassa",
 
 ]
 
@@ -273,3 +276,8 @@ SOCIALACCOUNT_ADAPTER = "inel_delivery.users.adapters.SocialAccountAdapter"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+GRAPH_MODELS = {
+    "all_applications": True,
+    "group_models": True,
+}
+os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin/'

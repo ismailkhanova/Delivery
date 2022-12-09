@@ -4,7 +4,7 @@ from imagekit.processors import ResizeToFill
 from django.conf import settings
 from django.shortcuts import reverse
 
-
+#Создание модели(таблицы) Курьера
 class Deliveryman(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь")
     name = models.CharField(max_length=255, verbose_name="ИФО")
@@ -18,9 +18,9 @@ class Deliveryman(models.Model):
         verbose_name = "Курьер"
         verbose_name_plural = "Курьеры"
 
-
+#Создание модели(таблицы) формы для заявки на позицию курьера
 class ApplicationForm(models.Model):
-    STATUS = (
+    STATUS = (                                   #статус заявки
         ('В ожидании', 'Заявка в ожидании'),
         ('Принято', 'Заявка принята'),
         ('Отказано', 'Заявка отказана')
@@ -51,7 +51,7 @@ class ApplicationForm(models.Model):
         permissions = (("view_app_page", "Can view the applications page"),
                        ("accept_app", "Can accept applications"),)
 
-
+#Создание модели(таблицы) Магазины
 class Store(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
     slug = models.SlugField(max_length=255, db_index=True)
@@ -68,7 +68,7 @@ class Store(models.Model):
         verbose_name = "Мазазин"
         verbose_name_plural = "Магазины"
 
-
+#Создание модели(таблицы) Категорий
 class Category(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
     slug = models.SlugField(max_length=255, db_index=True)
@@ -81,7 +81,7 @@ class Category(models.Model):
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
 
-
+#Создание модели(таблицы) Продуктов
 class Product(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
     slug = models.SlugField(max_length=255, db_index=True)
@@ -114,7 +114,7 @@ class Product(models.Model):
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
 
-
+#Создание модели (таблицы) для хранения заказанных продуктов(корзина)
 class OrderProduct(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Продукт")
@@ -134,7 +134,7 @@ class OrderProduct(models.Model):
         verbose_name = "Заказанный продукт"
         verbose_name_plural = "Заказанные продукты"
 
-
+#Создание модели(таблицы) Заказов
 class Order(models.Model):
     STATUS = (
         ('Новый', 'Новый заказ'),
